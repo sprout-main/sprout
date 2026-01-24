@@ -70,14 +70,28 @@
             transform: scale(1.05);
             box-shadow: 0 8px 15px rgba(0,0,0,0.2);
         }
-        a { text-decoration: none; color: #333; font-family: sans-serif; }
+        
+        a {
+            display: inline-block;
+            text-decoration: none;
+            color: #333;
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            margin: 5px;
+            padding: 5px 10px;
+            transition: 0.3s;
+        }
+
+        a:hover {
+            color: #007bff;
+            transform: scale(1.1);
+        }
     </style>
 </head>
 <body bgcolor="lightyellow">
 <center>
     <hr>
     <h1>GALLERY</h1>
-    <div class="item-container link-home"><a href="index.html"><strong>[ Home ]</strong></a></div>
+    <div class="item-container link-home"><a href="index.html">[ Home ]</a></div>
     <hr>
     
     <h2>MY PICTURES</h2>
