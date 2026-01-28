@@ -1,93 +1,210 @@
-</body>
-</html>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>About</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
+    <title> Jake.rent</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <style>
-        @keyframes reveal {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-                filter: blur(5px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-                filter: blur(0);
-            }
+        :root {
+            --bg-color: #ffffff;
+            --text-main: #1a1a1a;
+            --text-muted: #666666;
+            --accent: #2563eb;
+            --section-padding: 80px 20px;
         }
 
-        h1, h3, hr, h4, h2, .link-item, .item-container {
-            opacity: 0;
-            animation: reveal 0.8s ease-out forwards;
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            line-height: 1.6;
+            scroll-behavior: smooth;
         }
 
-        .link-home { animation-delay: 0.5s; }
-        h1 { animation-delay: 0.2s; }
-        hr { animation-delay: 0.5s; }
-        h4 { animation-delay: 0.8s; }
-        h3 { animation-delay: 1.0s; }
-        h2 { animation-delay: 1.1s; }
+        nav {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #eaeaea;
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 10%;
+            z-index: 1000;
+        }
 
-        .link-me { animation-delay: 1.15s;}
-        .link-1 { animation-delay: 1.2s; }
-        .link-2 { animation-delay: 1.3s; }
-        .link-3 { animation-delay: 1.4s; }
-        .link-4 { animation-delay: 1.5s; }
-        .link-5 { animation-delay: 1.6s; }
-        .link-6 { animation-delay: 1.1s; }
-
-        a {
-            display: inline-block;
+        nav a {
             text-decoration: none;
-            color: #333;
-            font-family: Georgia, 'Times New Roman', Times, serif;
-            margin: 5px;
-            padding: 5px 10px;
-            transition: 0.3s;
+            color: var(--text-main);
+            margin-left: 20px;
+            font-size: 0.9rem;
         }
 
-        a:hover {
-            color: #007bff;
-            transform: scale(1.1);
+        /* Updated Hero with Profile Image */
+        header {
+            padding: 100px 10%;
+            max-width: 1200px;
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            margin: 0 auto;
+        }
+
+        .profile-img {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            object-fit: cover;
+            filter: grayscale(100%);
+            border: 1px solid #eee;
+        }
+
+        .hero-text { flex: 1; }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 600px;
+        }
+
+        section {
+            padding: var(--section-padding);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 40px;
+            border-top: 1px solid #eee;
+            padding-top: 40px;
+        }
+
+        h2 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1rem;
+            color: var(--accent);
+        }
+
+        /* Image Gallery Styles */
+        .project-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .project-card {
+            background: #f9f9f9;
+            overflow: hidden;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .project-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .project-info { padding: 15px; }
+        .project-info h4 { margin: 0; font-size: 1rem; }
+        .project-info p { margin: 5px 0 0; font-size: 0.85rem; color: var(--text-muted); }
+
+        footer {
+            padding: 60px 10% 80px;
+            background: #fafafa;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            header { flex-direction: column; text-align: center; padding: 60px 5%; }
+            .grid, .project-grid { grid-template-columns: 1fr; }
+            .profile-img { width: 180px; height: 180px; }
+            h1 { font-size: 2.2rem; }
         }
     </style>
-<body bgcolor="lightyellow">
-    <center>
-    <hr>
-        <h1>ABOUT</h1>
-    <div class="item-container link-home"><a href="index.html">[ Home ]</a></div>
+</head>
+<body>
 
-        <hr>
-            <div class="link-item link-me"><img src="img/9ec17af9-e82f-40b7-93c1-2f29952a7ad2.jpg" width="*" height="300"></div>
-        <hr>
-            <h3>Personal Information</h3>
-        <hr>
- </center>
-            <div class="link-item link-1"><p> <strong>Complete Name:</strong> JAKE CARLO G. MANDI</p></div>
-            <div class="link-item link-2"><p> <strong>Date of Birth:</strong> APRIL 29, 2005</p></div>
-            <div class="link-item link-1"><p> <strong>Gender:</strong> MALE</p></div>
-            <div class="link-item link-2"><p> <strong>Civil Status:</strong> SINGLE</p></div>
-            <div class="link-item link-3"><p> <strong>Address:</strong> MALAMSIT, PEÑARRUBIA, ABRA</p></div>
-        <hr>
- <center>
-            <h3>Education</h3>
-        <hr> 
- </center>
-            <div class="link-item link-6"><p>TERTIARY</p></div>
-            <div class="link-item link-1"><p> <strong>School: </strong>Data Center College of the Philippines - Bangued</p></div>
-            <div class="link-item link-2"><p> <strong>Course: </strong>Bachelor of Science in Information Technology</p></div>
-            <div class="link-item link-6"><p>SECONDARY</p></div>
-            <div class="link-item link-1"><p><strong>School: </strong>Little Flower High School</p></div>
-            <div class="link-item link-2"><p><strong>Year Graduated: </strong>2023</p></div>
-            <div class="link-item link-6"><p>PRIMARY</p></div>
-            <div class="link-item link-1"><p><strong>School: </strong>PEÑARRUBIA INTEGRATED SCHOOL<strong> From:</strong> Grade 3 - 6</p></div>
-            <div class="link-item link-2"><p><strong>School: </strong>CAMP AQUINO ELEMENTARY SCHOOL<strong> From:</strong> Grade 1 - 3</p></div>
-            <div class="link-item link-3"><p><strong>School: </strong>TARLAC WEST CENTRAL ELEMENTARY SCHOOL<strong> From:</strong> Kindergarten - Grade 1</p></div>
-            
+<body bgcolor="lightyellow">
+    <nav>
+        <div style="font-weight: 450;">Jake.rent</div>
+        <div>
+            <a href="#about">About</a>
+            <a href="#work"></a>
+            <a href="#contact">Contact</a>
+        </div>
+    </nav>
+
+    <header id="about">
+        <img src="https://scontent.fcrk3-2.fna.fbcdn.net/v/t39.30808-6/606072000_2200327543829203_81348746390699612_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeEbyOzh5BKVp4vc5pQ3iRD04mcufn8nRWXiZy5-fydFZdIljM13hLBXMXsDGTlt0Ih-4mfevYAU37YDCfv3xpNp&_nc_ohc=5T2PddqP2EwQ7kNvwEGJO90&_nc_oc=Adl60DkoYX7q5nVogFZYTEddbpZDy3E-x6E6XpEnt2BGDEgLX5ii0-vexUTCEzAkWvk&_nc_zt=23&_nc_ht=scontent.fcrk3-2.fna&_nc_gid=kOC90-OHVJ_7CaApCxUmww&oh=00_AfogiNFoPitA952qeWJXZDTgXhTlbWFhvDdgwFjTD-uizQ&oe=6980021C" alt="Profile" class="profile-img">
+        <div class="hero-text">
+            <h1>
+                <a href="https://github.com/sprout-main" style="font-size: 1rem; color: var(--text-main); font-weight: 300;">My GitHub Profile</a></h1>
+            <p class="subtitle">A Third Year IT Student residing somewhere in the cordillera.</p>
+        </div>
+    </header>
+
+    <section id="work">
+        <div class="grid">
+            <h2>Experience</h2>
+            <div class="project-grid">
+                <div class="project-card">
+                    <img src="https://d3njjcbhbojbot.cloudfront.net/api/utilities/v1/imageproxy/https://images.ctfassets.net/wp1lcwdav1p1/4CrH1dP7NxqJsZaU2LQii8/39914091a0d536ac77e2b4564a9c80b2/iStock-973715860__2_.jpg?w=1500&h=680&q=60&fit=fill&f=faces&fm=jpg&fl=progressive&auto=format%2Ccompress&dpr=1&w=1000" alt="Project 1">
+                    <div class="project-info">
+                        <h4>Computers</h4>
+                        <p>I'm an IT Student so either I stare at them or the teachers make me</p>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <img src="https://www.cookmuseum.org/wp-content/uploads/2020/09/air-image-cropped.jpg" alt="Project 2">
+                    <div class="project-info">
+                        <h4>Sky</h4>
+                        <p>I stare at it on my freetime to rethink my life decisions</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <div class="grid">
+            <h2>Contact</h2>
+            <div>
+                <p>Want to say hi?</p>
+                <a href="mailto:mjakecarlo@gmail.com" style="font-size: 1.5rem; color: var(--text-main); font-weight: 600;">mjakecarlo@gmail.com</a>
+                <br>
+                <a href="https://www.facebook.com/igJakeG/" style="font-size: 1rem; color: var(--text-main); font-weight: 300;">On Facebook</a>
+                <br>
+                <a href="https://www.instagram.com/jakews2/" style="font-size: 1rem; color: var(--text-main); font-weight: 300;">On Instagram</a>
+
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Jake.rent | *sigh*</p>
+    </footer>
+
 </body>
 </html>
