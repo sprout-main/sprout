@@ -29,13 +29,13 @@
         h4 { animation-delay: 0.8s; }
         h2 { animation-delay: 1.1s; }
         
-        .link-1 { animation-delay: 1.6s; }
-        .link-2 { animation-delay: 2s; }
-        .link-3 { animation-delay: 2.4s; }
-        .link-4 { animation-delay: 1.8s; }
-        .link-5 { animation-delay: 2.8s; }
-        .link-6 { animation-delay: 3.2s; }
-        .link-7 { animation-delay: 3.6s; }
+        .link-1 { animation-delay: 1.5s; }
+        .link-2 { animation-delay: 1.8s; }
+        .link-3 { animation-delay: 2s; }
+        .link-4 { animation-delay: 2.3s; }
+        .link-5 { animation-delay: 2.5s; }
+        .link-6 { animation-delay: 2.8s; }
+        .link-7 { animation-delay: 3s; }
         
         
         a {
@@ -155,11 +155,12 @@
             background: #f9f9f9;
             overflow: hidden;
             border-radius: 8px;
-            transition: transform 0.3s ease;
-        }
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+            will-change: transform;
+        } 
 
         .project-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px) scale(1.01) !important;
         }
 
         .project-card img {
@@ -187,8 +188,6 @@
         }
     </style>
 </head>
-<body>
-
 <body bgcolor="lightyellow">
     <nav>
         <div style="font-weight: 450; padding-top: 10px;">Jake.rent
