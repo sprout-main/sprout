@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BAYUGO DENTAL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ---------- CSS Variables (Restored names) ---------- */
+        :root {
+            --gold-light: #c5a059;
+            --gold-dark: #a88544;
+            --dark-gray: #333;
+            --off-white: #fdfdfd;
+            --light-gray: #e9e9e9;
+            --gold-main: #D4AF37;
+            --gold-deep: #AA801E;
+            --gold-pale: #F3E5AB;
+            --cream: #FDFBF7;
+            --glass-white: rgba(255,255,255,0.85);
+            --brown-dark: #2C2416;
+            --brown-mid: #6B5E4A;
+            --gold-glow: rgba(212,175,55,0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            
+            background-image: linear-gradient(rgba(0,0,0,.384), rgba(0,0,0,.418)), url('assets/img/woodbg.jpg');
+        }
+
+        h1, h2, h3, .serif-text {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* ---------- SPA Routing CSS ---------- */
+        .spa-view {
+            display: none;
+        }
+
+        .spa-view.active {
+            display: block;
+        }
+
+        /* Header top area */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 40px 30px;
+            transition: color 0.3s;
+        }
+        
+        .logo-brand {
+            font-size: 25px;
+            font-weight: 300;
+            color: var(--gold-deep);
+            display: flex;
+            align-items: center;
+            font-style: italic;
+            gap: 5px;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            border: 2px solid var(--gold-main);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-style: italic;
+            color: var(--gold-main);
+            box-shadow: 0 0 15px rgba(212,175,55,.2);
+        }
+
+        /* Main Navigation Container */
+        nav {
+            position: relative; 
+            display: flex;
+            justify-content: flex-end; 
+            align-items: center;
+            padding: 20px 40px; 
+            background: url('assets/img/woodbg.jpg'); 
+            background-color: #2a1a0f; 
+            border-bottom: 1.5px solid var(--gold-main); 
+            min-height: 75px; 
+            z-index: 1000;
+        }
+
+        /* Right-Aligned Links */
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav a {
+            text-decoration: none;
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            color: var(--gold-dark);
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--gold-main);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4); 
+        }
+
+        /* Centered Logo Wrapper */
+        .brand-center-wrapper {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%); 
+            bottom: 0px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10; 
+        }
+
+        /* The Tooth Icon */
+        .brand-icon {
+            height: 45px;
+            margin-bottom: -15px; 
+        }
+
+        /* The Dark, Gold-Bordered Text Box */
+        .brand-text-box {
+            background-color: transparent;
+            color: var(--gold-dark);
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            letter-spacing: 3px; 
+            text-transform: uppercase;
+            padding: 8px 25px; 
+            transition: color 0.3s;
+        }
+        .brand-text-box:hover{
+            color: var(--gold-main);
+        }
+
+        /* Two column dashboard layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .brand-logo {
+            position: absolute;          
+            left: 50%;                   
+            transform: translateX(-50%); 
+            font-size: 28px;
+            color: var(--gold-deep);
+            align-items: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            flex-direction: column;      
+            display: flex;
+            transition: color 0.3s ease;
+        }
+
+        .brand-logo span {
+            margin-top: -12.5px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Hero header */
+        .hero-header {
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            background: linear-gradient(rgba(255, 255, 255, 0.164), rgba(255, 255, 255, 0.116)), url('assets/img/background.jpg');
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        .hero-header h1 {
+            font-size: 3.5rem;
+            color: var(--dark-gray);
+            margin-bottom: 20px;
+  text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.5); 
+            position: relative;
+        }
+
+        .hero-header h1 span {
+            color: var(--gold-light);
+            position: relative;
+        }
+
+        .hero-header p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin-bottom: 40px;
+            position: relative;.your-text {
+  text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.9); 
+}
+        }
+
+        .btn-primary {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            background-color: var(--gold-deep);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 15px rgba(197,160,89,.4);
+            text-decoration: none;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--gold-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Services section */
+        .services-section {
+            padding: 80px 50px;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight:300;
+            color: var(--gold-deep);
+            margin-bottom: 50px;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .service-card {
+            background: url(assets/img/woodbg.jpg);
+            padding: 40px 20px;
+            border-radius: 10px;
+            color: var(--gold-deep);
+            box-shadow: 0 5px 20px rgba(0,0,0,.05);
+            border-top: 2px solid var(--gold-deep);
+            transition: transform 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            border-top: 2px solid var(--gold-light);
+            color: var(--gold-main);
+        }
+
+        .service-icon {
+            font-size: 40px;
+            margin-bottom: 20px;
+            color: var(--gold-light);
+        }
+
+        .service-card h3 {
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        /* Footer */
+        footer {
+            background: transparent;
+            text-align: center;
+            padding: 25px 20px;
+            border-top: 0.5px solid var(--gold-main);
+            box-shadow: #222 0 0 50px;
+        }
+
+        footer p {
+            color: #ccc;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 20px;
+            }
+            .hero-header h1 {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* Contact section */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .contact-heading {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gold-deep);
+        }
+
+        /* Additional generic */
+        .section-padded {
+            padding: 80px 50px;
+            border-radius: 10px;
+            background: transparent;
+            max-width: 1200px;
+            margin: 0 auto;
+            box-shadow: 0 5px 20px rgba(0,0,0,.05);
+            transition: transform 0.3s ease;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+            color: var(--gold-deep);
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            color: var(--gold-deep);;
+            margin-bottom: 15px;
+        }
+
+        .section-header p {
+            color: var(--gold-deep);;
+            font-size: 1.1rem;
+        }
+
+        .details-list {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: var(--gold-deep);;
+            line-height: 1.4;
+        }
+
+        .icon-circle {
+            background: var(--light-gray);
+            color: var(--gold-light);
+            min-width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 1.2rem;
+        }
+
+        .map-full {
+            width: 100%;
+            height: 100%;
+            min-height: 450px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #eee;
+        }
+
+        .map-full iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        @media (max-width: 850px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+            .map-full {
+                min-height: 350px;
+            }
+            .section-padded {
+                padding: 40px 20px;
+            }
+        }
+
+        /* Fade animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-section.active {
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        main {
+            border-bottom-color: var(--gold-light);
+            border-bottom-width: 1px;
+            
+        }/* ---------- SPA Routing CSS (UPDATED) ---------- */
+/* Forces all inactive views to hide completely */
+.spa-view {
+    display: none !important;
+}
+
+/* Restores standard block display for normal sections */
+section.spa-view.active {
+    display: block !important;
+}
+
+/* Restores the specific flex layout for the hero header */
+header.hero-header.spa-view.active {
+    display: flex !important;
+}
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="brand-center-wrapper">
+            <img src="assets/img/log.png" class="brand-icon" alt="Bayugo Dental Logo">
+            <div class="brand-text-box">Bayugo Dental Clinic</div>
+        </div>
+
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#contact">Contact Us</a></li>
+        </ul>
+    </nav>
+            
+    <main>
+        <header class="hero-header fade-section spa-view" id="home"> 
+            <h1>Perfecting Your <span>Golden</span> Smile</h1>
+            <p>Experience premium dental care in an elegant, relaxing environment. We are dedicated to your oral health and confidence.</p>
+            <a class="btn-primary" href="login.html">Book An Appointment</a>
+        </header>
+
+        <section class="section-padded fade-section spa-view" id="home">
+            <div class="section-header">
+                <h2>Announcements & Promos</h2>
+                <p>Stay updated with our latest clinic news and take advantage of our special dental care offers.</p>
+            </div>
+            
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">🎉</div>
+                    <h3>New Weekend Hours</h3>
+                    <p>We are now open on Saturdays from 8:00 AM to 4:00 PM to better accommodate your busy schedule!</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">✨</div>
+                    <h3>Summer Whitening Promo</h3>
+                    <p>Get Discounts on all professional teeth whitening treatments until the end of the month. Book your slot today!</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">👴👵</div>
+                    <h3>Senior Discount</h3>
+                    <p>Present your valid Senior Citzens ID to receive a discount on general cleaning and preventative care.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="services" class="services-section fade-section spa-view">
+            <h2 class="section-title">Our Services</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">🦷</div>
+                    <h3>General Dentistry</h3>
+                    <p>Comprehensive exams, cleanings, and preventative care to keep your smile healthy.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">✨</div>
+                    <h3>Restorative/Cosmetic Dentistry</h3>
+                    <p>Teeth whitening, veneers, and smile makeovers to build your confidence.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">😬</div>
+                    <h3>Orthodontics</h3>
+                    <p>Traditional braces and clear aligners to straighten your teeth perfectly.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🔩</div>
+                    <h3>Dental Implantology</h3>
+                    <p>Surgical placement of permanent, artificial tooth roots to provide a secure and natural-looking foundation for replacement teeth.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🔬</div>
+                    <h3>Endodontics</h3>
+                    <p>Specialized treatments, including root canal therapy, designed to relieve dental pain, cure infection, and save your natural teeth.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🌿</div>
+                    <h3>Periodontics</h3>
+                    <p>Expert prevention, diagnosis, and treatment of gum disease to ensure a strong, healthy foundation for your teeth.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">💉</div>
+                    <h3>Oral Surgery</h3>
+                    <p>Expert surgical procedures, ranging from routine and complex tooth extractions to wisdom teeth removal and jaw treatments.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🌉</div>
+                    <h3>Prosthodontics</h3>
+                    <p>Advanced restoration and replacement of missing or damaged teeth using custom-made crowns, bridges, and dentures.</p>
+                </div>
+            </div>
+            <br>
+        </section>
+
+        <section class="section-padded fade-section spa-view" id="contact">
+            <div class="section-header">
+                <h2>Get in Touch</h2>
+                <p>We'd love to hear from you. Schedule a visit or ask us any questions about your dental care.</p>
+            </div>
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <h3 class="contact-heading">Contact Details</h3>
+                    <br>
+                    <div class="details-list">
+                        <div class="icon-circle">📍</div>
+                        <div>
+                            <strong>Clinic Address</strong><br>
+                            HJ77+533<br>
+                            Bangued, Abra, 2800
+                        </div>
+                    </div>
+                    <div class="details-list">
+                        <div class="icon-circle">📞</div>
+                        <div>
+                            <strong>Phone Number</strong><br>
+                            GLOBE: 0905 3050 055 | SMART: 0998 2111 388
+                        </div>
+                    </div>
+                    <div class="details-list">
+                        <div class="icon-circle">✉️</div>
+                        <div>
+                            <strong>Email Address</strong><br>
+                            info@bayugodental.com
+                        </div>
+                    </div>
+                </div>
+                <div class="map-full">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d336.21496172963197!2d120.61272187969665!3d17.56289462725049!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sph!4v1774826759417!5m2!1sen!2sph" width="600" height="450" style="border:0" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+        </section>
+    <footer>
+        <div class="brand-logo" style="justify-content: center; margin-bottom:1px; font-size:14px">Bayugo Dental Clinic</div>
+        <br>
+        <div class="brand-logo" style="justify-content:center; font-size:12.5px">All Rights Reserved | 2026</div>
+    </footer>
+    </main>
+
+
+    <script>
+        (function(){
+            function showSection(id){
+                // Grab all sections that act as pages
+                const views = document.querySelectorAll('.spa-view');
+                
+                views.forEach(view => {
+                    if(view.id === id) {
+                        view.classList.add('active'); 
+                    } else {
+                        view.classList.remove('active');
+                    }
+                });
+                
+                // Scroll to top
+                window.scrollTo(0,0);
+            }
+
+            function handleRoute(route){
+                if(!route || route === '/' || route === 'index.html'){
+                    return showSection('home');
+                }
+                
+                const targetId = route.replace(/^\//, '');
+                
+                if(document.getElementById(targetId)) {
+                    showSection(targetId);
+                } else {
+                    showSection('home'); // Fallback to home
+                }
+            }
+
+            function router(){
+                const hash = location.hash.replace(/^#/, '') || '/';
+                handleRoute(hash);
+            }
+
+            // Listen for hash changes triggered by nav links
+            window.addEventListener('hashchange', router);
+            
+            // Run on initial load
+            window.addEventListener('DOMContentLoaded', function(){
+                router();
+            });
+        })();
+    </script>
+</body>
+</html>

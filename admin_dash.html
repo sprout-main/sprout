@@ -1,0 +1,2009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bayugo Dental Clinic - Admin Dashboard</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --gold-main: #D4AF37;
+            --gold-deep: #AA801E;
+            --gold-pale: #F3E5AB;
+            --cream: #FDFBF7;
+            --glass-white: rgba(255, 255, 255, 0.92);
+            --brown-dark: #2C2416;
+            --brown-mid: #6B5E4A;
+            --gold-glow: rgba(212, 175, 55, 0.25);
+            --sidebar-bg: #ffffffee;
+            --main-content: #ffffff;
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--brown-dark);
+            background: linear-gradient(135deg, #f8f6f0 0%, #e8e6df 100%);
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, .brand-text {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background-image: linear-gradient(rgba(0,0,0,.384), rgba(0,0,0,.418)), url('assets/img/woodbg.jpg');
+            
+            backdrop-filter: blur(8px);
+            border-right: 1px solid var(--gold-glow);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            flex-direction: column; /* Stacks the image and text vertically */
+            align-items: center;    /* Centers them horizontally */
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            text-align: center;
+        }
+
+        .sidebar-logo img {
+            height: 45px;
+        }
+
+        .sidebar-logo span {
+            margin-top: -5px;
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            font-weight: 300;
+            color: var(--gold-main);
+        }
+
+        .sidebar-logo a {
+            margin-top: -10px;
+            font-family: 'Playfair Display', serif;
+            font-size: 15px;
+            font-weight: 200;
+            color: var(--gold-main);
+        }
+
+        .nav-menu {
+            list-style: none;
+            flex: 1;
+        }
+
+        .nav-item {
+            margin-bottom: 8px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            color: var(--gold-deep);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-link i {
+            width: 24px;
+            font-size: 18px;
+            color: var(--gold-main);
+            transition: all 0.3s ease;
+            
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: linear-gradient(90deg, rgba(212, 175, 55, 0.2), transparent);
+            color: var(--gold-main);
+            border-left: 3px solid var(--gold-main);
+        }
+
+        .logout-btn {
+            margin-top: 30px;
+            padding: 12px;
+            background: rgba(212, 175, 55, 0.15);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            color: #ccc;
+            font-weight: 500;
+            transition: 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(212, 175, 55, 0.3);
+            transform: translateY(-5px);
+            color: var(--gold-main);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px 35px;
+            overflow-x: auto;
+            background: var(--main-content);
+        }
+
+        .welcome-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .welcome-header h1 {
+            font-size: 28px;
+            color: var(--brown-dark);
+        }
+
+        .welcome-header h1 span {
+            color: var(--gold-deep);
+        }
+
+        .date-badge {
+            background: var(--glass-white);
+            padding: 8px 18px;
+            border-radius: 40px;
+            border: 1px solid var(--gold-glow);
+            font-size: 14px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: var(--glass-white);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--gold-glow);
+            border-radius: 24px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--gold-deep);
+            margin-bottom: 18px;
+            border-left: 3px solid var(--gold-main);
+            padding-left: 12px;
+        }
+
+        .stat-number {
+            font-size: 20px;
+            font-weight: 400;
+            color: var(--gold-deep);
+            padding-left: 12px;
+        }
+
+        .approval-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee8dc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .approve-btn {
+            background: var(--gold-main);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-family: 'Playfair Display', serif;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .data-table th, .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table th {
+            background: var(--gold-pale);
+        }
+
+        .btn {
+            background: var(--gold-main);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            margin: 2px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-sm {
+            background: var(--gold-main);
+            color: white;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 11px;
+            margin-right: 1px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-archive { background: #6c757d; }
+        .btn-restore { background: #28a745; }
+        .btn-danger { background: #dc3545; }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            display: inline-block;
+        }
+
+        .status-active { background: #d4edda; color: #155724; }
+        .status-archived { background: #f8d7da; color: #721c24; }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-confirmed { background: #d4edda; color: #155724; }
+        .status-cancelled { background: #f8d7da; color: #721c24; }
+
+        .patient-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--gold-glow);
+            padding-bottom: 10px;
+        }
+
+        .patient-tab {
+            padding: 8px 20px;
+            cursor: pointer;
+            border-radius: 30px;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .patient-tab.active {
+            background: var(--gold-main);
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 28px;
+            max-width: 1100px;
+            width: 95%;
+            padding: 30px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--gold-pale);
+            padding-bottom: 15px;
+        }
+
+        .modal-header h2 {
+            color: var(--gold-deep);
+            font-family: 'Playfair Display';
+        }
+
+        .close-modal {
+            font-size: 32px;
+            cursor: pointer;
+            color: var(--brown-mid);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--brown-mid);
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Poppins';
+        }
+
+        .calendar-container {
+            background: white;
+            border-radius: 24px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .fc { font-family: 'Poppins', sans-serif; }
+        .fc-toolbar-title { font-family: 'Playfair Display', serif; color: var(--gold-deep); }
+
+        .message-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+
+        .message-reply {
+            background: var(--gold-pale);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 8px;
+            font-size: 13px;
+        }
+
+        .daily-record-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 15px;
+        }
+
+        .daily-record-table th, .daily-record-table td {
+            border: 1px solid #ddd;
+            padding: 10px 8px;
+            text-align: left;
+        }
+
+        .daily-record-table th { background: var(--gold-pale); }
+
+        .medical-history-card {
+            background: #fffdf8;
+            border: 1px solid #d4c5a0;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .medical-history-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: #AA801E;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #F3E5AB;
+            padding-bottom: 8px;
+        }
+
+        .mh-row {
+            margin-bottom: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .diseases-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin: 10px 0 10px 25px;
+        }
+
+        .diseases-grid label { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+        .mh-text-input { padding: 6px 12px; border: 1px solid #ddd; border-radius: 6px; width: 250px; }
+        .indent { margin-left: 25px; }
+        .separator { height: 1px; background: #e8e0cc; margin: 15px 0; }
+        
+        .yes-no-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 20px;
+            margin-left: 15px;
+        }
+
+        .yes-no-group label { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; cursor: pointer; }
+        
+        .question-with-yesno {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .question-with-yesno .question-text { font-weight: 500; min-width: 220px; }
+        .consent-text { font-size: 12px; font-style: italic; margin: 20px 0; padding: 15px; background: #f9f6ef; border-radius: 12px; }
+        
+        .submit-btn {
+            background: var(--gold-main);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        .patient-info-display { background: var(--gold-pale); border-radius: 16px; padding: 20px; margin-bottom: 25px; }
+        .patient-info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .patient-info-item label { font-size: 11px; color: var(--brown-mid); display: block; }
+        .patient-info-item span { font-weight: 600; font-size: 14px; color: var(--brown-dark); }
+        
+        .tooth-toggle { display: flex; gap: 15px; margin: 15px 0 20px; justify-content: center; }
+        .tooth-toggle-btn { padding: 8px 20px; border: 2px solid var(--gold-main); background: white; border-radius: 30px; cursor: pointer; font-weight: 500; }
+        .tooth-toggle-btn.active { background: var(--gold-main); color: white; }
+        
+        .tooth-chart-container { display: none; margin-bottom: 20px; }
+        .tooth-chart-container.active { display: block; }
+        
+        .tooth-chart { margin: 20px 0; text-align: center; }
+        .tooth-row { display: flex; justify-content: center; gap: 5px; margin-bottom: 5px; flex-wrap: wrap; }
+        
+        .tooth {
+            width: 50px;
+            height: 50px;
+            background: #f5f0e0;
+            border: 1px solid var(--gold-main);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .tooth.selected { background: var(--gold-main); color: white; }
+        .kids-tooth { width: 40px; height: 40px; font-size: 10px; }
+        .tooth-diagram-wrapper { background: #faf7ef; border-radius: 16px; padding: 15px; margin: 20px 0; border: 1px solid var(--gold-glow); }
+
+        @media (max-width: 1200px) {
+            .dashboard-grid { grid-template-columns: repeat(1, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+    <aside class="sidebar"><center>
+            <img src="assets/img/log.png" width="65px" alt="Logo"></center>
+        <div class="sidebar-logo">
+            <span>BAYUGO DENTAL CLINIC</span>
+            <a>ADMIN PANEL</a>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item"><a class="nav-link active" onclick="switchSection('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link" onclick="switchSection('patients')"><i class="fas fa-users"></i> Patient Directory</a></li>
+            <li class="nav-item"><a class="nav-link" onclick="switchSection('users')"><i class="fas fa-users"></i> User Management</a></li>
+            <li class="nav-item"><a class="nav-link" onclick="switchSection('schedule')"><i class="fas fa-calendar-alt"></i> Monthly Schedule</a></li>
+            <li class="nav-item"><a class="nav-link" onclick="switchSection('appointments')"><i class="fas fa-tooth"></i> Appointment Requests</a></li>
+            <li class="nav-item"><a class="nav-link" onclick="switchSection('messages')"><i class="fas fa-envelope"></i> Patient Inquiries & Notifications</a></li>
+            <li class="nav-item"><a class="nav-link" onclick="switchSection('reviews')"><i class="fas fa-star"></i> Patient Reviews</a></li>
+            <li class="nav-item"><a class="nav-link" onclick="switchSection('edits')"><i class="fas fa-edit"></i> Edit Landing Page</a></li>
+            
+            
+        </ul>
+        <div class="logout-btn" onclick="window.location.href='index.html'">
+            <i class="fas fa-sign-out-alt"></i> Log Out
+        </div>
+    </aside>
+
+    <main class="main-content">
+        
+        <div id="dashboardView">
+            <div class="welcome-header">
+                <h1> Welcome,<span> Admin  </span></h1>
+                <div class="date-badge"><i class="far fa-calendar-alt"></i> <span id="currentDate"></span></div>
+            </div>
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-title">Patients with Appointments Today</div>
+                    <div class="stat-number" id="todayPatientCount">0</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Appointments Pending For Approval</div>
+                    <div class="stat-number" id="pendingApprovalCount">0</div>
+                    <div id="approvalList" style="margin-top:10px;"></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Total Registered Users</div>
+                    <div class="stat-number" id="totalUsersCount">0</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="patientsView" style="display:none;">
+            <div class="card" style="padding:25px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+                    <h2><i class="fas fa-users"></i> Patient Directory</h2>
+                    <button class="btn" onclick="openAddPatientModal()"><i class="fas fa-plus"></i> Add Patient</button>
+                </div>
+                
+                <div class="patient-tabs">
+                    <div class="patient-tab active" onclick="switchPatientTab('active')">Active</div>
+                    <div class="patient-tab" onclick="switchPatientTab('archived')">Archived</div>
+                </div>
+                
+                <input type="text" id="patientSearch" placeholder="Search..." style="padding:8px; margin:20px 0; width:250px; border-radius:20px; border:1px solid var(--gold-glow);" onkeyup="filterPatients()">
+                
+                <div id="activePatientsTable">
+                    <table class="data-table">
+                        <thead><tr><th>#</th><th>Name</th><th>Last Visit</th><th>Actions</th></tr></thead>
+                        <tbody id="activePatientsBody"></tbody>
+                    </table>
+                </div>
+                <div id="archivedPatientsTable" style="display:none;">
+                    <table class="data-table">
+                        <thead><tr><th>#</th><th>Name</th><th>Archived Date</th><th>Actions</th></tr></thead>
+                        <tbody id="archivedPatientsBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+                <div id="usersView" class="view-panel" style="display: none; padding: 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+    <h2 style="color: var(--brown-dark, #2C2416); font-family: 'Playfair Display', serif; margin: 0;">User Management</h2>
+    <button onclick="addNewUser()" style="background: #D4AF37; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-bottom: 15px;">
+    + Add New User
+</button>
+</div>
+
+    <div style="background: var(--glass-white, rgba(255,255,255,0.9)); padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px;">
+            <thead>
+                <tr style="border-bottom: 2px solid #eee; color: var(--brown-mid, #6B5E4A);">
+                    <th style="padding: 15px 10px; font-weight: 600;">Full Name</th>
+                    <th style="padding: 15px 10px; font-weight: 600;">Email Address</th>
+                    <th style="padding: 15px 10px; font-weight: 600;">Password</th>
+                    <th style="padding: 15px 10px; font-weight: 600;">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="usersTableBody">
+                </tbody>
+        </table>
+    </div>
+</div>
+
+        <div id="scheduleView" style="display:none;">
+            <div class="card" style="padding:25px; ">
+                <h2><i class="fas fa-calendar-alt"></i> Monthly Schedule</h2>
+                <div class="calendar-container" id="calendar"></div>
+            </div>
+        </div>
+
+        <div id="appointmentsView" style="display:none;">
+            <div class="card" style="padding:25px;">
+                <h2>Appointment Requests</h2>
+                <div style="overflow-x:auto;">
+                    <br>
+                    <table class="data-table">
+                        <thead><tr><th>Patient</th><th>Date</th><th>Time</th><th>Procedure</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody id="appointmentsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="messagesView" style="display:none;">
+            <div class="card" style="padding:25px;">
+                <h2>Patient Inquiries & Notifications</h2>
+                <div id="messagesList" style="margin-top:20px;"></div>
+            </div>
+        </div>
+
+        <div id="reviewsView" style="display:none;">
+    <div class="card" style="padding:25px;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+            <h2><i class="fas fa-star"></i> Patient Reviews</h2>
+        </div>
+        <div id="reviewsContainer"></div> 
+    </div>
+</div>
+
+<div id="editWebsiteView" style="display:none;">
+            <div class="welcome-header" style="margin-bottom: 20px;">
+                <h2 style="font-family: 'Playfair Display', serif; color: var(--brown-dark);">
+                    <i class="fas fa-laptop-code" style="color: var(--gold-main);"></i> Manage Website Content
+                </h2>
+            </div>
+            
+            <div class="dashboard-grid" style="grid-template-columns: 1fr;">
+                <div class="card" style="padding: 30px;">
+                    
+                    <h3 style="color: var(--gold-deep); margin-bottom: 20px; border-bottom: 2px solid var(--gold-pale); padding-bottom: 10px;">
+                        <i class="fas fa-home"></i> Landing Page Settings
+                    </h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Card Title (1)</label>
+                            <input type="text" value="New Weekend Hours" style="font-size: 15px; font-weight: 500;">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 30px;">
+                        <label>Card Description (1)</label>
+                        <textarea rows="3" style="resize: vertical; font-size: 14px;">We are now open on Saturdays from 8:00 AM to 4:00 PM to better accommodate your busy schedule!</textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Card Title (2)</label>
+                            <input type="text" value="Summer Whitening Promo" style="font-size: 15px; font-weight: 500;">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 30px;">
+                        <label>Card Description (2)</label>
+                        <textarea rows="3" style="resize: vertical; font-size: 14px;">Get Discounts on all professional teeth whitening treatments until the end of the month. Book your slot today!</textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Card Title (3)</label>
+                            <input type="text" value="Senior Discount" style="font-size: 15px; font-weight: 500;">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 30px;">
+                        <label>Card Description (3)</label>
+                        <textarea rows="3" style="resize: vertical; font-size: 14px;">Present your valid Senior Citizens ID to receive a discount on general cleaning and preventative care.</textarea>
+                    </div>
+
+                    <h3 style="color: var(--gold-deep); margin-bottom: 20px; border-bottom: 2px solid var(--gold-pale); padding-bottom: 10px;">
+                        <i class="fas fa-address-book"></i> Contact Information
+                    </h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Contact Number</label>
+                            <input type="text" value="+0998 2111 388">
+                        </div>
+                        <div class="form-group">
+                            <label>Contact Number</label>
+                            <input type="text" value="+0905 3050 055">
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" value="info@bayugodental.com">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label>Physical Address</label>
+                        <input type="text" value="123 Dental Street, Bayugo City">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Facebook Page Link</label>
+                            <input type="text" value="https://facebook.com/bayugodental">
+                        </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: flex-end; margin-top: 30px;">
+                        <button class="submit-btn" style="width: auto; padding: 12px 35px;" onclick="alert('This is just a mockup! Changes are not saved yet.')">
+                            <i class="fas fa-save"></i> Save Website Changes
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+
+        
+<div id="addPatientModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Add Patient</h2>
+            <span class="close-modal" onclick="closeAddPatientModal()">&times;</span>
+        </div>
+        <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="newPatientName">
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Age</label>
+                <input type="text" id="newPatientAge">
+            </div>
+            <div class="form-group">
+                <label>Sex</label>
+                <select id="newPatientSex">
+                    <option>Male</option>
+                    <option>Female</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="newPatientEmail">
+        </div>
+        <div class="form-group">
+            <label>Address</label>
+            <input type="text" id="newPatientAddress">
+        </div>
+        <div class="form-group">
+            <label>Contact</label>
+            <input type="text" id="newPatientContact">
+        </div>
+        <button class="submit-btn" onclick="addNewPatient()">Add Patient</button>
+    </div>
+</div>
+
+
+<div id="viewPatientModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Patient Info: <span id="viewPatientName"></span></h2>
+            <span class="close-modal" onclick="closeViewPatientModal()">&times;</span>
+        </div>
+        <div id="viewPatientContent"></div>
+        <div style="display:flex; gap:10px; justify-content:center; margin-top:20px;">
+            <button class="btn" id="viewDailyRecordBtn"><i class="fas fa-calendar-day"></i> Daily Record</button>
+            <button class="btn" id="viewAddHistoryBtn"><i class="fas fa-plus"></i> Add History</button>
+            <button class="btn" id="viewHistoryListBtn"><i class="fas fa-folder-open"></i> View History</button>
+            <button class="btn" id="viewTreatmentPlanBtn"><i class="fas fa-file-prescription"></i> Treatment Plan</button>
+            <button class="btn btn-archive" id="viewArchiveBtn"><i class="fas fa-archive"></i> Archive</button>
+            <button class="btn" id="viewPrintRecordBtn" onclick="openPrintModal()"><i class="fas fa-print"></i> Print Record</button>
+        </div>
+    </div>
+</div>
+
+<div id="dailyRecordModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Daily Record: <span id="dailyRecordPatientName"></span></h2>
+            <span class="close-modal" onclick="closeDailyRecordModal()">&times;</span>
+        </div>
+        <button class="btn" onclick="addDailyRecordRow()"><i class="fas fa-plus"></i> Add Entry</button>
+        <div style="overflow-x:auto; margin-top:15px;">
+            <table class="daily-record-table" id="dailyRecordTable">
+                <thead><tr><th>DATE</th><th>TOOTH #</th><th>SERVICE</th><th>DENTIST</th><th>VALUE (₱)</th><th>PAID (₱)</th><th>BALANCE (₱)</th><th></th></tr></thead>
+                <tbody id="dailyRecordBody"></tbody>
+            </table>
+        </div>
+        <button class="btn" style="background:var(--gold-deep); margin-top:15px;" onclick="saveDailyRecordEntries()"><i class="fas fa-save"></i> Save Entries</button>
+        
+        <h3 style="margin-top:20px;">Saved Records</h3>
+        <div style="overflow-x:auto;">
+            <table class="daily-record-table" id="savedDailyRecordsTable">
+                <thead><tr><th>Date</th><th>Tooth</th><th>Service</th><th>Dentist</th><th>Value</th><th>Paid</th><th>Balance</th><<th></th></tr></thead>
+                <tbody id="savedDailyRecordsBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="historyModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Medical History Form</h2>
+            <span class="close-modal" onclick="closeHistoryModal()">&times;</span>
+        </div>
+        <div id="historyModalContent"></div>
+    </div>
+</div>
+
+<div id="viewHistoryModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Medical History Records</h2>
+            <span class="close-modal" onclick="closeViewHistoryModal()">&times;</span>
+        </div>
+        <div id="viewHistoryContent"></div>
+    </div>
+</div>
+
+<div id="treatmentPlanModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Treatment Plan: <span id="treatmentPlanPatientName"></span></h2>
+            <span class="close-modal" onclick="closeTreatmentPlanModal()">&times;</span>
+        </div>
+        <textarea id="treatmentPlanText" rows="8" style="width:100%; padding:12px; border-radius:12px;"></textarea>
+        <button class="submit-btn" onclick="saveTreatmentPlan()">Save</button>
+    </div>
+</div>
+
+<div id="replyMessageModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Reply to Patient</h2>
+            <span class="close-modal" onclick="closeReplyModal()">&times;</span>
+        </div>
+        <textarea id="replyText" rows="4" style="width:100%; padding:12px; border-radius:12px;"></textarea>
+        <button class="submit-btn" onclick="sendReply()">Send Reply</button>
+    </div>
+</div>
+
+<div id="printRecordModal" class="modal">
+    <div class="modal-content" style="max-width: 450px; text-align: center;">
+        <div class="modal-header">
+            <h2><i class="fas fa-print"></i> Print Record</h2>
+            <span class="close-modal" onclick="closePrintModal()">&times;</span>
+        </div>
+        
+        <p style="margin-bottom: 25px; font-size: 15px;">
+            Select which record you would like to print for <strong id="printPatientName" style="color: var(--gold-deep);"></strong>:
+        </p>
+        
+        <div style="display: flex; gap: 15px; justify-content: center; margin-bottom: 10px;">
+            <button class="btn" style="padding: 12px 20px; font-size: 14px;" onclick="confirmPrint('Medical')">
+                <i class="fas fa-notes-medical"></i> Medical Record
+            </button>
+            <button class="btn" style="padding: 12px 20px; font-size: 14px;" onclick="confirmPrint('Dental')">
+                <i class="fas fa-tooth"></i> Dental Record
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+<script>// Initial State Variables
+
+// --- Print Records Logic ---
+let currentPrintPatientName = "";
+
+function openPrintModal() {
+    // Get the patient name from the existing View Patient Modal header
+    currentPrintPatientName = document.getElementById('viewPatientName').innerText;
+    
+    if(!currentPrintPatientName) {
+        alert("No patient selected.");
+        return;
+    }
+
+    // Set the name in the print modal and display it
+    document.getElementById('printPatientName').innerText = currentPrintPatientName;
+    document.getElementById('printRecordModal').style.display = 'flex';
+}
+
+function closePrintModal() {
+    document.getElementById('printRecordModal').style.display = 'none';
+}
+
+function confirmPrint(recordType) {
+    // 1. Close the selection modal first so they don't overlap awkwardly
+    closePrintModal();
+    
+    // 2. Trigger the SweetAlert2 confirmation
+    Swal.fire({
+        title: 'Are you sure?',
+        text: `You are about to print ${currentPrintPatientName}'s ${recordType} Record.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6', // The blue "Yes, print it!" button
+        cancelButtonColor: '#d33',     // The red "Cancel" button
+        confirmButtonText: 'Yes, print it!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        // 3. If the admin clicks "Yes, print it!"
+        if (result.isConfirmed) {
+            
+            // Optional: Show a success message before printing
+            Swal.fire({
+                title: 'Printed!',
+                text: `${recordType} Record for ${currentPrintPatientName} has been sent to the printer.`,
+                icon: 'success',
+                timer: 2000, // Auto-closes after 2 seconds
+                showConfirmButton: false
+            });
+            
+            // Trigger the actual print command
+            // window.print(); 
+        }
+    });
+}
+    let dailyRecords = JSON.parse(localStorage.getItem('dailyRecords') || '{}');
+    let patients = JSON.parse(localStorage.getItem('patients') || '[]');
+    let patientHistories = JSON.parse(localStorage.getItem('patientHistories') || '{}');
+    let treatmentPlans = JSON.parse(localStorage.getItem('treatmentPlans') || '{}');
+    let appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+    let messages = JSON.parse(localStorage.getItem('messages') || '[]');
+    let users = JSON.parse(localStorage.getItem('drms_users') || '[]');
+    
+    let nextPatientId = patients.length > 0 ? Math.max(...patients.map(p => p.id)) + 1 : 1001;
+    let currentDailyRecordPatient = null;
+    let currentTab = 'active';
+    let currentViewPatient = null;
+    let currentReplyMessageId = null;
+    let calendar = null;
+
+    // Helper Functions
+    function formatDate(dateString) { 
+        if (!dateString) return 'N/A'; 
+        let d = new Date(dateString); 
+        if(isNaN(d.getTime())) return dateString; 
+        return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`; 
+    }
+    
+    function formatDateYMD(date) { 
+        let d = new Date(date); 
+        return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; 
+    }
+    
+    function getElem(id) { 
+        return document.getElementById(id); 
+    }
+    
+    function saveAllToLocal() { 
+        localStorage.setItem('dailyRecords', JSON.stringify(dailyRecords)); 
+        localStorage.setItem('patients', JSON.stringify(patients)); 
+        localStorage.setItem('patientHistories', JSON.stringify(patientHistories)); 
+        localStorage.setItem('treatmentPlans', JSON.stringify(treatmentPlans)); 
+        localStorage.setItem('appointments', JSON.stringify(appointments)); 
+        localStorage.setItem('messages', JSON.stringify(messages)); 
+        // FIX: Added users to the local storage sync
+        localStorage.setItem('drms_users', JSON.stringify(users)); 
+    }
+
+    // Initialize Default Data if Empty
+    if(patients.length === 0) { 
+        patients = [{ 
+            id: 1001, name: 'Juan Dela Cruz', age: 25, sex: 'Male', email: 'juan@email.com', 
+            address: 'Bangued', contact: '09123456789', lastVisit: formatDate(new Date()), 
+            status: 'active', archivedDate: null 
+        }]; 
+        saveAllToLocal(); 
+    }
+    if(appointments.length === 0) { 
+        appointments.push({ 
+            id: 1001, patientId: 1001, patientName: 'Juan Dela Cruz', date: formatDateYMD(new Date()), 
+            time: '10:00 AM', procedure: 'Tooth Extraction', status: 'pending', createdAt: new Date().toISOString() 
+        }); 
+        saveAllToLocal(); 
+    }
+
+    // Notifications
+    function addNotification(patientId, patientName, message) { 
+        messages.push({ 
+            id: Date.now(), patientId, patientName, message, reply: null, 
+            isSystemNotification: true, createdAt: new Date().toISOString() 
+        }); 
+        saveAllToLocal(); 
+    }
+
+    // Dashboard Data Updates
+    function updateDashboard() { 
+        let today = formatDateYMD(new Date()); 
+        let todayAppointments = appointments.filter(a => a.date === today && (a.status === 'confirmed' || a.status === 'approved')); 
+        getElem('todayPatientCount').innerHTML = todayAppointments.length; 
+        
+        let pending = appointments.filter(a => a.status === 'pending'); 
+        getElem('pendingApprovalCount').innerHTML = pending.length; 
+        let approvalDiv = getElem('approvalList'); 
+        if(pending.length === 0) {
+            approvalDiv.innerHTML = '<div style="text-align:center; padding:10px; color:#999;">No pending requests</div>'; 
+        } else {
+            approvalDiv.innerHTML = pending.slice(0,3).map(a => 
+                `<div class="approval-item">
+                    <div>
+                        <strong>${a.patientName}</strong><br>
+                        <small>${a.procedure} on ${a.date}</small>
+                    </div>
+                    <button class="approve-btn" onclick="confirmAppointment(${a.id})">Approve</button>
+                    <button class="approve-btn" style="background:#dc3545;" onclick="cancelAppointment(${a.id})">Deny</button>
+                </div>`
+            ).join(''); 
+        }
+    }
+
+    // Calendar
+    function renderCalendar() { 
+        if(calendar) calendar.destroy(); 
+        let calendarEl = document.getElementById('calendar'); 
+        if(!calendarEl) return; 
+        
+        calendar = new FullCalendar.Calendar(calendarEl, { 
+            initialView: 'dayGridMonth', 
+            headerToolbar: { left: 'prev next', center: 'title', right: 'today'}, 
+            events: appointments.filter(a => a.status === 'confirmed' || a.status === 'approved').map(a => ({ 
+                title: `${a.patientName} - ${a.procedure}`, 
+                start: a.date 
+            })), 
+            dateClick: function(info) { 
+                showDailyAppointments(info.dateStr); 
+            } 
+        }); 
+        calendar.render(); 
+    }
+
+    function showDailyAppointments(date) { 
+        let dayAppointments = appointments.filter(a => a.date === date); 
+        let scheduleTimes = []; 
+        for(let h = 9; h < 18; h++) { 
+            let period = h < 12 ? 'AM' : 'PM'; 
+            let hour = h > 12 ? h-12 : h; 
+            scheduleTimes.push(`${hour}:00 ${period}`); 
+        } 
+        if(new Date(date).getDay() === 2) {
+            scheduleTimes = scheduleTimes.filter(t => parseInt(t) >= 12); 
+        }
+        
+        let html = `<h3>Appointments for ${date}</h3>
+                    <table class="data-table">
+                        <thead><tr><th>Time</th><th>Patient</th><th>Procedure</th><th>Status</th></tr></thead>
+                        <tbody>`; 
+        
+        for(let time of scheduleTimes) { 
+            let appt = dayAppointments.find(a => a.time === time); 
+            if(appt) {
+                html += `<tr><td>${time}</td><td>${appt.patientName}</td><td>${appt.procedure}</td><td><span class="status-badge status-${appt.status === 'cancelled' ? 'cancelled' : 'confirmed'}">${appt.status}</span></td></tr>`; 
+            } else {
+                html += `<tr><td>${time}</td><td colspan="3" style="color:#999;">Available</td></tr>`; 
+            }
+        } 
+        html += `</tbody></table><button class="btn" onclick="this.closest('.modal').remove()">Close</button>`; 
+        
+        let modal = document.createElement('div'); 
+        modal.className = 'modal'; 
+        modal.style.display = 'flex'; 
+        modal.innerHTML = `<div class="modal-content"><div class="modal-header"><h2>Schedule for ${date}</h2><span class="close-modal" onclick="this.closest('.modal').remove()">&times;</span></div>${html}</div>`; 
+        document.body.appendChild(modal); 
+    }
+
+    // Appointments Actions
+    function renderAppointmentsTable() { 
+        let tbody = getElem('appointmentsTableBody'); 
+        if(!tbody) return; 
+        tbody.innerHTML = appointments.map(a => `<tr>
+                <td>${a.patientName}</td>
+                <td>${a.date}</td>
+                <td>${a.time}</td>
+                <td>${a.procedure}</td>
+                <td><span class="status-badge status-${a.status === 'pending' ? 'pending' : (a.status === 'confirmed' ? 'confirmed' : 'cancelled')}">${a.status}</span></td>
+                <td>${a.status === 'pending' ? `<button class="btn-sm" onclick="confirmAppointment(${a.id})"><i class="fas fa-check"></i> Confirm</button><button class="btn-sm btn-danger" onclick="cancelAppointment(${a.id})"><i class="fas fa-times"></i> Cancel</button>` : (a.status === 'confirmed' ? `<button class="btn-sm btn-danger" onclick="cancelAppointment(${a.id})"><i class="fas fa-times"></i> Cancel</button>` : '')}</td>
+            </tr>`).join('') || '<tr><td colspan="6">No appointments</td></tr>'; 
+    }
+
+    window.confirmAppointment = (id) => { 
+        let appt = appointments.find(a => a.id === id); 
+        if(appt && appt.status === 'pending') { 
+            appt.status = 'confirmed'; 
+            saveAllToLocal(); 
+            addNotification(appt.patientId, appt.patientName, `✅ The appointment on ${appt.date} at ${appt.time} (${appt.procedure}) by ${appt.patientName} has been APPROVED.`); 
+            renderAppointmentsTable(); 
+            updateDashboard(); 
+            if(calendar) calendar.refetchEvents(); 
+            renderMessages(); 
+            alert(`Appointment confirmed. Patient notified.`); 
+        } 
+    };
+
+    window.cancelAppointment = (id) => { 
+        if(confirm("Cancel this appointment?")) { 
+            let appt = appointments.find(a => a.id === id); 
+            if(appt && appt.status !== 'cancelled') { 
+                appt.status = 'cancelled'; 
+                saveAllToLocal(); 
+                addNotification(appt.patientId, appt.patientName, `❌ The appointment on ${appt.date} at ${appt.time} (${appt.procedure}) by ${appt.patientName} has been CANCELLED.`); 
+                renderAppointmentsTable(); 
+                updateDashboard(); 
+                if(calendar) calendar.refetchEvents(); 
+                renderMessages(); 
+                alert("Appointment cancelled. Patient notified."); 
+            } 
+        } 
+    };
+
+    // Messages System
+    function renderMessages() { 
+        let container = getElem('messagesList'); 
+        if(!container) return; 
+        let allMessages = [...messages].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)); 
+        container.innerHTML = allMessages.map(m => `
+            <div class="message-item">
+                <strong>${m.isSystemNotification ? '📢 System Notification' : m.patientName}</strong> 
+                <span style="font-size:11px; color:#999;">${new Date(m.createdAt).toLocaleString()}</span>
+                <p>${m.message}</p>
+                ${m.reply ? `<div class="message-reply"><strong>Clinic Reply:</strong> ${m.reply}</div>` : (!m.isSystemNotification ? `<button class="btn-sm" onclick="openReplyModal(${m.id}, '${m.patientName}')"><i class="fas fa-reply"></i> Reply</button>` : '')}
+            </div>`
+        ).join('') || '<div>No messages</div>'; 
+    }
+
+    window.openReplyModal = (id, name) => { 
+        currentReplyMessageId = id; 
+        getElem('replyMessageModal').style.display = 'flex'; 
+    };
+
+    window.sendReply = () => { 
+        let reply = getElem('replyText').value; 
+        if(reply && currentReplyMessageId) { 
+            let msg = messages.find(m => m.id === currentReplyMessageId); 
+            if(msg) { 
+                msg.reply = reply; 
+                addNotification(msg.patientId, msg.patientName, `📩 Clinic reply: "${reply}"`); 
+                saveAllToLocal(); 
+                renderMessages(); 
+            } 
+        } 
+        getElem('replyText').value = ''; 
+        closeReplyModal(); 
+        alert("Reply sent."); 
+    };
+
+    function closeReplyModal() { 
+        getElem('replyMessageModal').style.display = 'none'; 
+        currentReplyMessageId = null; 
+    }
+
+    // Patient Directory System
+    function renderActivePatients() { 
+        let tbody = getElem('activePatientsBody'); 
+        let active = patients.filter(p => p.status === 'active'); 
+        tbody.innerHTML = active.map((p,i) => `<tr>
+                <td>${i+1}</td>
+                <td>${p.name}</td>
+                <td>${p.lastVisit||'N/A'}</td>
+                <td><button class="btn-sm" onclick="openViewPatient(${p.id})"><i class="fas fa-eye"></i> View</button></td>
+            </tr>`).join('') || '<tr><td colspan="4">No active patients</td></tr>'; 
+    }
+
+    function renderArchivedPatients() { 
+        let tbody = getElem('archivedPatientsBody'); 
+        let archived = patients.filter(p => p.status === 'archived'); 
+        tbody.innerHTML = archived.map((p,i) => `<tr>
+                <td>${i+1}</td>
+                <td>${p.name}</td>
+                <td>${p.archivedDate||'N/A'}</td>
+                <td><button class="btn-sm" onclick="openViewPatient(${p.id})"><i class="fas fa-eye"></i> View</button></td>
+            </tr>`).join('') || '<tr><td colspan="4">No archived patients</td></tr>'; 
+    }
+
+    window.archivePatient = (id) => { 
+        if(confirm("Archive this patient?")) { 
+            let p = patients.find(p => p.id == id); 
+            if(p && p.status === 'active') { 
+                p.status = 'archived'; 
+                p.archivedDate = formatDate(new Date()); 
+                saveAllToLocal(); 
+                renderActivePatients(); 
+                renderArchivedPatients(); 
+                updateDashboard(); 
+                closeViewPatientModal(); 
+                alert(`Archived ${p.name}`); 
+            } 
+        } 
+    };
+
+    window.restorePatient = (id) => { 
+        let p = patients.find(p => p.id == id); 
+        if(p && p.status === 'archived') { 
+            p.status = 'active'; 
+            p.archivedDate = null; 
+            saveAllToLocal(); 
+            renderActivePatients(); 
+            renderArchivedPatients(); 
+            updateDashboard(); 
+            closeViewPatientModal(); 
+            alert(`Restored ${p.name}`); 
+        } 
+    };
+
+    window.switchPatientTab = (tab) => { 
+        currentTab = tab; 
+        document.querySelectorAll('.patient-tab').forEach(t => t.classList.remove('active')); 
+        if(tab === 'active') { 
+            document.querySelector('.patient-tab:first-child').classList.add('active'); 
+            getElem('activePatientsTable').style.display = 'block'; 
+            getElem('archivedPatientsTable').style.display = 'none'; 
+            renderActivePatients(); 
+        } else { 
+            document.querySelector('.patient-tab:last-child').classList.add('active'); 
+            getElem('activePatientsTable').style.display = 'none'; 
+            getElem('archivedPatientsTable').style.display = 'block'; 
+            renderArchivedPatients(); 
+        } 
+    };
+
+    window.filterPatients = () => { 
+        let s = getElem('patientSearch')?.value.toLowerCase() || ''; 
+        let rows = currentTab === 'active' ? document.querySelectorAll('#activePatientsBody tr') : document.querySelectorAll('#archivedPatientsBody tr'); 
+        rows.forEach(r => { 
+            if(r.cells && r.cells[1]) {
+                r.style.display = r.cells[1].innerText.toLowerCase().includes(s) ? '' : 'none'; 
+            }
+        }); 
+    };
+
+    window.openViewPatient = (pid) => { 
+        let p = patients.find(p => p.id == pid); 
+        if(!p) return; 
+        currentViewPatient = p; 
+        getElem('viewPatientName').innerText = p.name; 
+        getElem('viewPatientContent').innerHTML = `
+            <div class="patient-info-display">
+                <div class="patient-info-grid">
+                    <div class="patient-info-item"><label>Name:</label><span>${p.name}</span></div>
+                    <div class="patient-info-item"><label>Age / Sex:</label><span>${p.age} / ${p.sex}</span></div>
+                    <div class="patient-info-item"><label>Email:</label><span>${p.email||'N/A'}</span></div>
+                    <div class="patient-info-item"><label>Address:</label><span>${p.address||'N/A'}</span></div>
+                    <div class="patient-info-item"><label>Contact:</label><span>${p.contact||'N/A'}</span></div>
+                    <div class="patient-info-item"><label>Status:</label><span class="status-badge ${p.status==='active'?'status-active':'status-archived'}">${p.status==='active'?'Active':'Archived'}</span></div>
+                </div>
+            </div>`; 
+        
+        let dailyBtn = getElem('viewDailyRecordBtn'), 
+            addBtn = getElem('viewAddHistoryBtn'), 
+            historyBtn = getElem('viewHistoryListBtn'), 
+            treatmentBtn = getElem('viewTreatmentPlanBtn'), 
+            archiveBtn = getElem('viewArchiveBtn'); 
+        
+        dailyBtn.onclick = () => { closeViewPatientModal(); openDailyRecord(p.id, p.name); }; 
+        addBtn.onclick = () => { closeViewPatientModal(); openAddHistoryForm(p.id, p.name); }; 
+        historyBtn.onclick = () => { closeViewPatientModal(); openViewHistory(p.id, p.name); }; 
+        treatmentBtn.onclick = () => { closeViewPatientModal(); openTreatmentPlan(p.id, p.name); }; 
+        
+        if(p.status === 'active') { 
+            archiveBtn.innerHTML = '<i class="fas fa-archive"></i> Archive'; 
+            archiveBtn.className = 'btn btn-archive'; 
+            archiveBtn.onclick = () => archivePatient(p.id); 
+        } else { 
+            archiveBtn.innerHTML = '<i class="fas fa-undo"></i> Restore'; 
+            archiveBtn.className = 'btn btn-restore'; 
+            archiveBtn.onclick = () => restorePatient(p.id); 
+        } 
+        getElem('viewPatientModal').style.display = 'flex'; 
+    };
+
+    function closeViewPatientModal() { 
+        getElem('viewPatientModal').style.display = 'none'; 
+    }
+
+    window.openAddPatientModal = () => getElem('addPatientModal').style.display = 'flex';
+    window.closeAddPatientModal = () => getElem('addPatientModal').style.display = 'none';
+
+    window.addNewPatient = () => { 
+        let name = getElem('newPatientName').value; 
+        if(!name) { alert("Enter name"); return; } 
+        let newPatient = { 
+            id: nextPatientId++, name, 
+            age: getElem('newPatientAge').value, 
+            sex: getElem('newPatientSex').value, 
+            email: getElem('newPatientEmail').value, 
+            address: getElem('newPatientAddress').value, 
+            contact: getElem('newPatientContact').value, 
+            lastVisit: formatDate(new Date()), 
+            status: 'active', archivedDate: null 
+        }; 
+        patients.push(newPatient); 
+        if(!dailyRecords[newPatient.id]) dailyRecords[newPatient.id] = []; 
+        if(!patientHistories[newPatient.id]) patientHistories[newPatient.id] = []; 
+        saveAllToLocal(); 
+        alert(`Patient ${name} added`); 
+        closeAddPatientModal(); 
+        renderActivePatients(); 
+        updateDashboard(); 
+    };
+
+    // Treatment Plan Actions
+    window.openTreatmentPlan = (pid, name) => { 
+        getElem('treatmentPlanPatientName').innerText = name; 
+        getElem('treatmentPlanText').value = treatmentPlans[pid] || ''; 
+        getElem('treatmentPlanModal').style.display = 'flex'; 
+    };
+
+    window.saveTreatmentPlan = () => { 
+        if(currentViewPatient) { 
+            treatmentPlans[currentViewPatient.id] = getElem('treatmentPlanText').value; 
+            saveAllToLocal(); 
+            alert("Treatment plan saved."); 
+            closeTreatmentPlanModal(); 
+        } 
+    };
+
+    function closeTreatmentPlanModal() { 
+        getElem('treatmentPlanModal').style.display = 'none'; 
+    }
+
+    // Daily Record Actions
+    window.openDailyRecord = (pid, name) => { 
+        currentDailyRecordPatient = { id: pid, name: name }; 
+        getElem('dailyRecordPatientName').innerText = name; 
+        if(!dailyRecords[pid]) dailyRecords[pid] = []; 
+        renderDailyRecordForm(); 
+        renderSavedDailyRecords(pid); 
+        getElem('dailyRecordModal').style.display = 'flex'; 
+    };
+
+    function renderDailyRecordForm() { 
+        let tbody = getElem('dailyRecordBody'); 
+        tbody.innerHTML = ''; 
+        let row = tbody.insertRow(); 
+        row.innerHTML = `
+            <td><input type="date" class="daily-date" value="${formatDateYMD(new Date())}"></td>
+            <td><input type="text" class="daily-tooth" placeholder="Tooth #"></td>
+            <td><input type="text" class="daily-service" placeholder="Service"></td>
+            <td><input type="text" class="daily-dentist" value="Dr. Frances Bayugo"></td>
+            <td><input type="number" class="daily-value" value="0" step="any" oninput="calcDailyBalance(this)"></td>
+            <td><input type="number" class="daily-paid" value="0" step="any" oninput="calcDailyBalance(this)"></td>
+            <td><input type="text" class="daily-balance" value="0" readonly></td>
+            <td><button class="btn-sm" style="background:#28a745;" onclick="addDailyRecordRow()"><i class="fas fa-plus"></i> Add</button></td>`; 
+    }
+
+    window.addDailyRecordRow = () => { 
+        let tbody = getElem('dailyRecordBody'); 
+        let row = tbody.insertRow(); 
+        row.innerHTML = `
+            <td><input type="date" class="daily-date" value="${formatDateYMD(new Date())}"></td>
+            <td><input type="text" class="daily-tooth" placeholder="Tooth #"></td>
+            <td><input type="text" class="daily-service" placeholder="Service"></td>
+            <td><input type="text" class="daily-dentist" value="Dr. Frances Bayugo"></td>
+            <td><input type="number" class="daily-value" value="0" step="any" oninput="calcDailyBalance(this)"></td>
+            <td><input type="number" class="daily-paid" value="0" step="any" oninput="calcDailyBalance(this)"></td>
+            <td><input type="text" class="daily-balance" value="0" readonly></td>
+            <td><button class="btn-sm" style="background:#dc3545;" onclick="this.closest('tr').remove()"><i class="fas fa-trash"></i></button></td>`; 
+    };
+
+    window.calcDailyBalance = (el) => { 
+        let row = el.closest('tr'); 
+        let val = parseFloat(row.querySelector('.daily-value').value) || 0; 
+        let paid = parseFloat(row.querySelector('.daily-paid').value) || 0; 
+        row.querySelector('.daily-balance').value = (val - paid).toFixed(2); 
+    };
+
+    window.saveDailyRecordEntries = () => { 
+        if(!currentDailyRecordPatient) return; 
+        let rows = document.querySelectorAll('#dailyRecordBody tr'); 
+        let newRecords = []; 
+        rows.forEach(row => { 
+            let date = row.querySelector('.daily-date')?.value; 
+            let service = row.querySelector('.daily-service')?.value; 
+            if(date && service) { 
+                newRecords.push({ 
+                    id: Date.now()+Math.random(), 
+                    date: formatDate(date), 
+                    tooth: row.querySelector('.daily-tooth')?.value||'', 
+                    service, 
+                    dentist: row.querySelector('.daily-dentist')?.value||'', 
+                    valueWork: parseFloat(row.querySelector('.daily-value')?.value||0).toFixed(2), 
+                    amountPaid: parseFloat(row.querySelector('.daily-paid')?.value||0).toFixed(2), 
+                    balance: parseFloat(row.querySelector('.daily-balance')?.value||0).toFixed(2), 
+                    status: 'active', 
+                    createdAt: new Date().toLocaleString() 
+                }); 
+            } 
+        }); 
+        if(newRecords.length) { 
+            dailyRecords[currentDailyRecordPatient.id] = [...(dailyRecords[currentDailyRecordPatient.id]||[]), ...newRecords]; 
+            saveAllToLocal(); 
+            alert(`${newRecords.length} record(s) saved`); 
+            renderDailyRecordForm(); 
+            renderSavedDailyRecords(currentDailyRecordPatient.id); 
+            updateDashboard(); 
+        } else {
+            alert("Fill at least Date and Service"); 
+        }
+    };
+
+    function renderSavedDailyRecords(pid) { 
+        let tbody = getElem('savedDailyRecordsBody'); 
+        let records = dailyRecords[pid]||[]; 
+        if(!records.length) { 
+            tbody.innerHTML = '<tr><td colspan="8">No records yet. Add entries above.</td></tr>'; 
+            return; 
+        } 
+        tbody.innerHTML = records.slice().reverse().map(r => `<tr>
+            <td>${r.date||''}</td>
+            <td>${r.tooth||''}</td>
+            <td>${r.service||''}</td>
+            <td>${r.dentist||''}</td>
+            <td>₱${r.valueWork||0}</td>
+            <td>₱${r.amountPaid||0}</td>
+            <td>₱${r.balance||0}</td>
+            </tr>`).join(''); 
+    }
+
+    window.archiveDailyRecord = (pid, rid) => { 
+        let rec = dailyRecords[pid].find(r => r.id == rid); 
+        if(rec) rec.status = 'archived'; 
+        saveAllToLocal(); 
+        renderSavedDailyRecords(pid); 
+    };
+
+    window.restoreDailyRecord = (pid, rid) => { 
+        let rec = dailyRecords[pid].find(r => r.id == rid); 
+        if(rec) rec.status = 'active'; 
+        saveAllToLocal(); 
+        renderSavedDailyRecords(pid); 
+    };
+
+    function closeDailyRecordModal() { 
+        getElem('dailyRecordModal').style.display = 'none'; 
+        currentDailyRecordPatient = null; 
+    };
+
+    // Tooth Chart
+    function renderToothChart(containerId, type, selectedTeethStr = '') { 
+        let selectedSet = new Set(selectedTeethStr ? selectedTeethStr.split(',') : []); 
+        // FIX: Passed 'event' explicitly into the onclick handlers below
+        let html = `
+            <div class="tooth-diagram-wrapper">
+                <h4>Affected Teeth Diagram</h4>
+                <div class="tooth-toggle">
+                    <div class="tooth-toggle-btn active" onclick="setToothChartType(event, 'adult', '${containerId}')">Adult</div>
+                    <div class="tooth-toggle-btn" onclick="setToothChartType(event, 'kids', '${containerId}')">Kids</div>
+                </div>
+                <div id="adultChart_${containerId}" class="tooth-chart-container active">
+                    <div class="tooth-chart">
+                        <div class="tooth-row">
+                            ${[18,17,16,15,14,13,12,11,21,22,23,24,25,26,27,28].map(n=>`<div class="tooth" data-tooth="${n}" onclick="toggleToothSelection(this, '${containerId}')">${n}</div>`).join('')}
+                        </div>
+                        <div class="tooth-row">
+                            ${[48,47,46,45,44,43,42,41,31,32,33,34,35,36,37,38].map(n=>`<div class="tooth" data-tooth="${n}" onclick="toggleToothSelection(this, '${containerId}')">${n}</div>`).join('')}
+                        </div>
+                    </div>
+                </div>
+                <div id="kidsChart_${containerId}" class="tooth-chart-container">
+                    <div class="tooth-chart">
+                        <div class="tooth-row">
+                            ${[55,54,53,52,51,61,62,63,64,65].map(n=>`<div class="tooth kids-tooth" data-tooth="${n}" onclick="toggleToothSelection(this, '${containerId}')">${n}</div>`).join('')}
+                        </div>
+                        <div class="tooth-row">
+                            ${[85,84,83,82,81,71,72,73,74,75].map(n=>`<div class="tooth kids-tooth" data-tooth="${n}" onclick="toggleToothSelection(this, '${containerId}')">${n}</div>`).join('')}
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" id="selectedTeeth_${containerId}" value="${selectedTeethStr}">
+            </div>`; 
+        document.getElementById(containerId).innerHTML = html; 
+        
+        setTimeout(() => { 
+            document.querySelectorAll(`#${containerId} .tooth`).forEach(t => { 
+                if(selectedSet.has(t.getAttribute('data-tooth'))) t.classList.add('selected'); 
+            }); 
+        }, 10); 
+    }
+
+    window.toggleToothSelection = (el, containerId) => { 
+        el.classList.toggle('selected'); 
+        let selected = []; 
+        document.querySelectorAll(`#${containerId} .tooth.selected`).forEach(t => selected.push(t.getAttribute('data-tooth'))); 
+        document.getElementById(`selectedTeeth_${containerId}`).value = selected.join(','); 
+    };
+
+    // FIX: Added 'event' as the first parameter
+    window.setToothChartType = (event, type, containerId) => { 
+        document.querySelectorAll(`#${containerId} .tooth-toggle-btn`).forEach(btn => btn.classList.remove('active')); 
+        event.target.classList.add('active'); 
+        document.getElementById(`adultChart_${containerId}`).classList.toggle('active', type==='adult'); 
+        document.getElementById(`kidsChart_${containerId}`).classList.toggle('active', type==='kids'); 
+    };
+
+    // Medical History System
+    window.openAddHistoryForm = (patientId, patientName) => { 
+        const modalContent = getElem('historyModalContent'); 
+        modalContent.innerHTML = `
+            <div>
+                <h2 class="form-title">MEDICAL HISTORY - ${patientName}</h2>
+                <div class="form-row">
+                    <div class="form-group"><label>Date</label><input type="date" id="historyDate" value="${formatDateYMD(new Date())}"></div>
+                    <div class="form-group"><label>Age</label><input type="text" id="historyAge"></div>
+                    <div class="form-group"><label>Sex</label><select id="historySex"><option>Male</option><option>Female</option></select></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Address</label><input type="text" id="historyAddress"></div>
+                    <div class="form-group"><label>Birthday</label><input type="date" id="historyBirthday"></div>
+                    <div class="form-group"><label>Civil Status</label><select id="historyCivil"><option>Single</option><option>Married</option></select></div>
+                </div>
+                <div id="toothChartWrapper_${patientId}"></div>
+                <div class="medical-history-card">
+                    <h3>MEDICAL HISTORY</h3>
+                    <div class="question-with-yesno">
+                        <span class="question-text">Good health?</span>
+                        <div class="yes-no-group">
+                            <label><input type="radio" name="modalGoodHealth" value="yes"> Yes</label>
+                            <label><input type="radio" name="modalGoodHealth" value="no"> No</label>
+                        </div>
+                    </div>
+                    <div class="mh-row">Diseases:</div>
+                    <div class="diseases-grid">
+                        <label><input type="checkbox" class="modalDisease"> Rheumatic Fever</label>
+                        <label><input type="checkbox" class="modalDisease"> Heart Condition</label>
+                        <label><input type="checkbox" class="modalDisease"> Diabetes</label>
+                        <label><input type="checkbox" class="modalDisease"> Kidney Disease</label>
+                        <label><input type="checkbox" class="modalDisease"> High BP</label>
+                        <label><input type="checkbox" class="modalDisease"> Anemia</label>
+                        <label><input type="checkbox" class="modalDisease"> Hepatitis</label>
+                        <label><input type="checkbox" class="modalDisease"> Asthma</label>
+                        <label><input type="checkbox" class="modalDisease"> Epilepsy</label>
+                    </div>
+                    <div class="question-with-yesno">
+                        <span class="question-text">Allergies?</span>
+                        <div class="yes-no-group">
+                            <label><input type="radio" name="modalAllergies" value="yes"> Yes</label>
+                            <label><input type="radio" name="modalAllergies" value="no"> No</label>
+                        </div>
+                    </div>
+                    <div class="question-with-yesno">
+                        <span class="question-text">Penicillin allergy?</span>
+                        <div class="yes-no-group">
+                            <label><input type="radio" name="modalPenicillin" value="yes"> Yes</label>
+                            <label><input type="radio" name="modalPenicillin" value="no"> No</label>
+                        </div>
+                    </div>
+                    <div class="mh-row">others: <input type="text" id="modalOthers" class="mh-text-input"></div>
+                    <div class="question-with-yesno">
+                        <span class="question-text">Taking medicine?</span>
+                        <div class="yes-no-group">
+                            <label><input type="radio" name="modalMedicine" value="yes"> Yes</label>
+                            <label><input type="radio" name="modalMedicine" value="no"> No</label>
+                        </div>
+                    </div>
+                    <div class="question-with-yesno">
+                        <span class="question-text">Treated by physician?</span>
+                        <div class="yes-no-group">
+                            <label><input type="radio" name="modalPhysician" value="yes"> Yes</label>
+                            <label><input type="radio" name="modalPhysician" value="no"> No</label>
+                        </div>
+                    </div>
+                    <div class="mh-row">Reason: <input type="text" id="modalReason" class="mh-text-input"></div>
+                    <div class="mh-row">Previous Extraction: <input type="text" id="modalExtraction" class="mh-text-input"></div>
+                    <div><strong>FOR WOMEN:</strong></div>
+                    <div class="question-with-yesno">
+                        <span class="question-text">Pregnant?</span>
+                        <div class="yes-no-group">
+                            <label><input type="radio" name="modalPregnant" value="yes"> Yes</label>
+                            <label><input type="radio" name="modalPregnant" value="no"> No</label>
+                        </div>
+                    </div>
+                    <div class="question-with-yesno">
+                        <span class="question-text">Bleeder?</span>
+                        <div class="yes-no-group">
+                            <label><input type="radio" name="modalBleeder" value="yes"> Yes</label>
+                            <label><input type="radio" name="modalBleeder" value="no"> No</label>
+                        </div>
+                    </div>
+                    <div class="question-with-yesno">
+                        <span class="question-text">Menstruation?</span>
+                        <div class="yes-no-group">
+                            <label><input type="radio" name="modalMenstruation" value="yes"> Yes</label>
+                            <label><input type="radio" name="modalMenstruation" value="no"> No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="consent-text">I consent to the recommended treatments.</div>
+                <button class="submit-btn" onclick="savePatientHistoryWithTooth(${patientId})">Save Medical History</button>
+            </div>`; 
+            
+        renderToothChart(`toothChartWrapper_${patientId}`, 'adult', ''); 
+        getElem('historyModal').style.display = 'flex'; 
+    };
+
+    window.savePatientHistoryWithTooth = (patientId) => { 
+        let selectedTeeth = document.getElementById(`selectedTeeth_toothChartWrapper_${patientId}`)?.value || ''; 
+        let historyData = { 
+            id: Date.now(), 
+            date: getElem('historyDate')?.value ? formatDate(getElem('historyDate').value) : formatDate(new Date()), 
+            age: getElem('historyAge')?.value||'', 
+            sex: getElem('historySex')?.value||'', 
+            address: getElem('historyAddress')?.value||'', 
+            birthday: getElem('historyBirthday')?.value||'', 
+            civilStatus: getElem('historyCivil')?.value||'', 
+            goodHealth: document.querySelector('input[name="modalGoodHealth"]:checked')?.value||'', 
+            diseases: Array.from(document.querySelectorAll('.modalDisease:checked')).map(cb=>cb.parentElement.innerText.trim()), 
+            allergies: document.querySelector('input[name="modalAllergies"]:checked')?.value||'', 
+            penicillin: document.querySelector('input[name="modalPenicillin"]:checked')?.value||'', 
+            others: getElem('modalOthers')?.value||'', 
+            takingMedicine: document.querySelector('input[name="modalMedicine"]:checked')?.value||'', 
+            physicianCare: document.querySelector('input[name="modalPhysician"]:checked')?.value||'', 
+            reason: getElem('modalReason')?.value||'', 
+            previousExtraction: getElem('modalExtraction')?.value||'', 
+            pregnant: document.querySelector('input[name="modalPregnant"]:checked')?.value||'', 
+            bleeder: document.querySelector('input[name="modalBleeder"]:checked')?.value||'', 
+            menstruation: document.querySelector('input[name="modalMenstruation"]:checked')?.value||'', 
+            status: 'active', 
+            createdAt: new Date().toLocaleString(), 
+            affectedTeeth: selectedTeeth 
+        }; 
+        if(!patientHistories[patientId]) patientHistories[patientId] = []; 
+        patientHistories[patientId].push(historyData); 
+        saveAllToLocal(); 
+        alert("Medical history saved!"); 
+        closeHistoryModal(); 
+        renderActivePatients(); 
+    };
+
+    window.openViewHistory = (patientId, patientName) => { 
+        let histories = patientHistories[patientId]||[]; 
+        if(!histories.length) { 
+            alert("No records"); 
+            return; 
+        } 
+        let html = `<h3>${patientName} - History Records</h3>`; 
+        histories.forEach((h,idx) => { 
+            html += `
+                <div class="medical-history-card">
+                    <h4>Record #${idx+1} - ${h.date}</h4>
+                    <div class="mh-row"><strong>Affected Teeth:</strong> ${h.affectedTeeth||'None'}</div>
+                    <div class="mh-row"><strong>Age/Sex:</strong> ${h.age}/${h.sex}</div>
+                    <div class="mh-row"><strong>Address:</strong> ${h.address}</div>
+                    <div class="mh-row"><strong>Civil Status:</strong> ${h.civilStatus}</div>
+                    <div class="mh-row"><strong>Good Health:</strong> ${h.goodHealth}</div>
+                    <div class="mh-row"><strong>Diseases:</strong> ${h.diseases.join(', ')}</div>
+                    <div class="mh-row"><strong>Allergies:</strong> ${h.allergies} | Penicillin:${h.penicillin}</div>
+                    <div class="mh-row"><strong>Others:</strong> ${h.others}</div>
+                    <div class="mh-row"><strong>Medication:</strong> ${h.takingMedicine} | Physician:${h.physicianCare}</div>
+                    <div class="mh-row"><strong>Reason:</strong> ${h.reason}</div>
+                    <div class="mh-row"><strong>Previous Extraction:</strong> ${h.previousExtraction}</div>
+                    <div class="mh-row"><strong>Women:</strong> Preg:${h.pregnant} Bleeder:${h.bleeder} Mens:${h.menstruation}</div></div>`; 
+        }); 
+        getElem('viewHistoryContent').innerHTML = html; 
+        getElem('viewHistoryModal').style.display = 'flex'; 
+    };
+
+    window.archivePatientHistory = (pid, hid) => { 
+        let rec = patientHistories[pid].find(h => h.id === hid); 
+        if(rec) rec.status = 'archived'; 
+        saveAllToLocal(); 
+        closeViewHistoryModal(); 
+        alert("Archived"); 
+    };
+
+    window.restorePatientHistory = (pid, hid) => { 
+        let rec = patientHistories[pid].find(h => h.id === hid); 
+        if(rec) rec.status = 'active'; 
+        saveAllToLocal(); 
+        closeViewHistoryModal(); 
+        alert("Restored"); 
+    };
+
+    function closeHistoryModal() { 
+        getElem('historyModal').style.display = 'none'; 
+    }
+
+    function closeViewHistoryModal() { 
+        getElem('viewHistoryModal').style.display = 'none'; 
+    }
+
+    // Navigation and Page Switching
+    // FIX: Assign directly to window so inline onclicks don't lose the reference
+    window.switchSection = function(section, event) {
+        let activeMap = { 
+            dashboard: 'dashboardView', 
+            patients: 'patientsView', 
+            users: 'usersView', 
+            schedule: 'scheduleView', 
+            appointments: 'appointmentsView', 
+            messages: 'messagesView',
+            reviews: 'reviewsView',
+            edits: 'editWebsiteView'
+        }; 
+        
+        // Hide all sections
+        Object.values(activeMap).forEach(v => { 
+            let el = document.getElementById(v); 
+            if(el) el.style.display = 'none'; 
+        }); 
+        
+        // Show the active section
+        let active = document.getElementById(activeMap[section]); 
+        if(active) active.style.display = 'block'; 
+        
+        // Update active class on navigation links
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active')); 
+        if(event && event.target) {
+            // Handle icon clicks by grabbing the closest link
+            const link = event.target.closest('.nav-link');
+            if (link) link.classList.add('active'); 
+        }
+        
+        // Trigger the appropriate rendering function
+        if(section === 'dashboard') updateDashboard(); 
+        if(section === 'patients') { 
+            switchPatientTab('active'); 
+            renderActivePatients(); 
+            renderArchivedPatients(); 
+        } 
+        if(section === 'users') {
+            // FIX: Uses the correct function name defined at the bottom of the script
+            renderUsersView();  
+        }
+        if(section === 'schedule') { 
+            setTimeout(() => renderCalendar(), 100); 
+        } 
+        if(section === 'reviews') renderAdminReviews();
+        if(section === 'appointments') renderAppointmentsTable(); 
+        if(section === 'messages') renderMessages(); 
+    };
+
+    // On Load Initialization
+    // FIX: Added a safety check to ensure element exists before setting text
+    let dateElem = document.getElementById('currentDate');
+    if (dateElem) {
+        dateElem.innerText = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+    }
+    
+    renderActivePatients(); 
+    renderArchivedPatients(); 
+    updateDashboard(); 
+    renderAppointmentsTable(); 
+    renderMessages();
+    window.switchSection('dashboard');
+    
+    document.addEventListener("DOMContentLoaded", () => {
+        // Run the render function as soon as the page loads
+        renderUsersView();
+    });
+
+   function renderUsersView() {
+    // 1. Fetch all registered users from local storage
+    const usersString = localStorage.getItem('drms_users');
+    const users = usersString ? JSON.parse(usersString) : [];
+
+    // 2. Update the Total Users Widget
+    const countWidget = document.getElementById('totalUsersCount');
+    if (countWidget) {
+        countWidget.innerText = users.length;
+    }
+
+    // 3. Populate the Users Table
+    const tableBody = document.getElementById('usersTableBody');
+    if (tableBody) {
+        tableBody.innerHTML = ''; // Clear out any old data
+        
+        if (users.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 30px; color: #6B5E4A; font-style: italic;">No patients have registered yet.</td></tr>';
+        } else {
+            // Loop through the users array and build a row for each one
+            users.forEach((user, index) => {
+                const row = document.createElement('tr');
+                row.style.borderBottom = "1px solid #f5f5f5";
+                
+                row.innerHTML = `
+                    <td style="padding: 15px 10px; color: #2C2416; font-weight: 500;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            ${user.name}
+                        </div>
+                    </td>
+                    <td style="padding: 15px 10px; color: #6B5E4A;">${user.email}</td><td style="padding: 15px 10px; color: #6B5E4A;">
+    <span id="pwd-text-${index}">••••••</span>
+    <i class="fas fa-eye" id="pwd-icon-${index}" onclick="togglePassword(${index})" style="cursor: pointer; margin-left: 8px; color: #a8a29e; transition: 0.2s;" title="Show Password"></i>
+</td>
+                    <td style="padding: 15px 10px;">
+                        <button onclick="editUser(${index})" style="background: #e0f2fe; color: #0369a1; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: 500; transition: 0.2s; margin-right: 0px;">
+                            Edit
+                        </button>
+                        <button onclick="deleteUser(${index})" style="background: #fee2e2; color: #991b1b; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: 500; transition: 0.2s;">
+                            Remove
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+    }
+}
+
+// Function to show/hide the password
+function togglePassword(index) {
+    // 1. Get the current user list from local storage
+    let users = JSON.parse(localStorage.getItem('drms_users') || '[]');
+    let actualPassword = users[index].password;
+    
+    // 2. Get the specific text span and icon for this row
+    let pwdText = document.getElementById(`pwd-text-${index}`);
+    let pwdIcon = document.getElementById(`pwd-icon-${index}`);
+
+    // 3. Toggle between hidden and visible
+    if (pwdText.innerText === '••••••') {
+        pwdText.innerText = actualPassword; // Show real password
+        pwdIcon.classList.remove('fa-eye');
+        pwdIcon.classList.add('fa-eye-slash'); // Change to a "crossed out" eye
+    } else {
+        pwdText.innerText = '••••••'; // Hide password again
+        pwdIcon.classList.remove('fa-eye-slash');
+        pwdIcon.classList.add('fa-eye'); // Change back to normal eye
+    }
+}
+// Function to DELETE a user
+function deleteUser(index) {
+    if (confirm("Are you sure you want to remove this user?")) {
+        let users = JSON.parse(localStorage.getItem('drms_users') || '[]');
+        
+        users.splice(index, 1); // Remove the user from the array
+        
+        localStorage.setItem('drms_users', JSON.stringify(users)); // Save updated list
+        renderUsersView(); // Refresh the table automatically
+    }
+}
+
+// Function to EDIT a user (Using prompt boxes for a quick, no-modal solution)
+function editUser(index) {
+    let users = JSON.parse(localStorage.getItem('drms_users') || '[]');
+    let user = users[index];
+
+    // Ask user for new details, defaulting to their current details
+    let newName = prompt("Edit User's Name:", user.name);
+    if (newName === null) return; // User clicked Cancel
+
+    let newEmail = prompt("Edit User's Email:", user.email);
+    if (newEmail === null) return;
+
+    let newPassword = prompt("Edit User's Password:", user.password);
+    if (newPassword === null) return;
+
+    // Update the data
+    users[index] = {
+        name: newName.trim(),
+        email: newEmail.trim(),
+        password: newPassword.trim()
+    };
+
+    localStorage.setItem('drms_users', JSON.stringify(users)); // Save to storage
+    renderUsersView(); // Refresh the table
+}
+
+// Function to ADD a new user
+function addNewUser() {
+    let name = prompt("Enter new user's Full Name:");
+    if (!name) return;
+
+    let email = prompt("Enter new user's Email:");
+    if (!email) return;
+
+    let password = prompt("Enter new user's Password:");
+    if (!password) return;
+
+    let users = JSON.parse(localStorage.getItem('drms_users') || '[]');
+    
+    // Push the new user to the array
+    users.push({
+        name: name.trim(),
+        email: email.trim(),
+        password: password.trim()
+    });
+
+    localStorage.setItem('drms_users', JSON.stringify(users)); // Save
+    renderUsersView(); // Refresh the table
+}
+
+    // Function to handle deleting a user
+    window.deleteUser = function(index) {
+        if(confirm("Are you sure you want to remove this patient account? This action cannot be undone.")) {
+            let users = JSON.parse(localStorage.getItem('drms_users')) || [];
+            
+            // Remove the user at the specific index
+            users.splice(index, 1);
+            
+            // Save the updated list back to localStorage
+            localStorage.setItem('drms_users', JSON.stringify(users));
+            
+            // Re-render the view to update the table and widget count immediately
+            renderUsersView();
+        }
+    };
+
+    // 1. Declare the reviews variable at the top of your script (if not already there)
+window.renderAdminReviews = () => {
+    // Refresh from localStorage to ensure we have the latest submissions
+    reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
+    let container = document.getElementById('reviewsContainer'); // Changed from adminReviewsList to match HTML ID
+    
+    if(!reviews.length) { 
+        container.innerHTML = '<p style="padding: 20px; color: #666;">No patient reviews have been submitted yet.</p>'; 
+        return; 
+    }
+    
+    // Sort reviews by newest first
+    let sortedReviews = [...reviews].sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+    
+    // Create a table to display them cleanly
+    let html = `
+        <table class="data-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+                <tr style="border-bottom: 2px solid #eee;">
+                    <th style="padding: 12px;">Date</th>
+                    <th style="padding: 12px;">Patient</th>
+                    <th style="padding: 12px;">Rating</th>
+                    <th style="padding: 12px;">Feedback</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    
+    sortedReviews.forEach(r => {
+        let stars = '<i class="fas fa-star" style="color:var(--gold-main, #D4AF37)"></i>'.repeat(r.rating) + 
+                    '<i class="far fa-star" style="color:var(--gold-main, #D4AF37)"></i>'.repeat(5 - r.rating);
+                    
+        html += `
+            <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 12px; white-space: nowrap;">${new Date(r.createdAt).toLocaleDateString()}</td>
+                <td style="padding: 12px;"><strong>${r.patientName}</strong></td>
+                <td style="padding: 12px; white-space: nowrap;">${stars}</td>
+                <td style="padding: 12px; color: #444;">${r.text}</td>
+            </tr>
+        `;
+    });
+    
+    html += '</tbody></table>';
+    container.innerHTML = html;
+};
+
+</script>
+</body>
+</html>

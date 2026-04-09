@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DRMS - Authentication</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ---------- CSS Variables ---------- */
+        :root {
+            --gold-main: #D4AF37;
+            --gold-deep: #AA801E;
+            --gold-pale: #F3E5AB;
+            --cream: #FDFBF7;
+            --glass-white: rgba(255,255,255,0.9);
+            --brown-dark: #2C2416;
+            --brown-mid: #6B5E4A;
+            --gold-glow: rgba(212,175,55,0.4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--brown-dark);
+            background: linear-gradient(135deg, #fdfbfb 0%, #e0e4e6 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        h1, h2, h3, .brand-title { font-family: 'Playfair Display', serif; }
+
+        .auth-container {
+            background: var(--glass-white);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--gold-glow);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,.08), 0 5px 15px rgba(212,175,55,.15);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            position: relative;
+        }
+
+        .back-link {
+            position: absolute; top: 15px; left: 20px;
+            font-size: 12px; color: var(--brown-mid);
+            text-decoration: none;
+        }
+
+        .auth-header { text-align: center; margin-bottom: 30px; }
+        .brand-title { font-size: 24px; font-weight: 600; color: var(--gold-deep); }
+        .brand-subtitle { font-size: 13px; color: var(--brown-mid); margin-top: 5px; }
+
+        .tab-container { display: flex; margin-bottom: 20px; border-bottom: 2px solid #eee; }
+        .tab-button {
+            flex: 1; background: transparent; border: none;
+            padding: 10px 0; font-family: 'Poppins', sans-serif;
+            font-size: 15px; font-weight: 500; color: var(--brown-mid);
+            cursor: pointer; position: relative;
+        }
+        .tab-button.active { color: var(--gold-deep); }
+        .tab-button.active::after {
+            content: ''; position: absolute; bottom: -2px; left: 0;
+            width: 100%; height: 2px; background-color: var(--gold-main);
+        }
+
+        .form-panel { display: none; }
+        .form-panel.active { display: block; }
+
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block; font-size: 13px; color: var(--brown-mid);
+            margin-bottom: 8px; font-weight: 500;
+        }
+        .input-group input {
+            width: 100%; padding: 12px 15px; border: 1px solid #ddd;
+            border-radius: 8px; font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+        }
+
+        .utility-link {
+            display: block; text-align: right; font-size: 12px;
+            color: var(--gold-deep); text-decoration: none;
+            margin-top: -10px; margin-bottom: 20px; cursor: pointer;
+        }
+
+        .checkbox-group {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px; /* Adds a little space between the box and the text */
+            border-radius: 8px; font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+        }
+
+        /* Prevents the checkbox label from looking like a form header */
+        .checkbox-group label {
+            font-weight: 300; 
+            margin-bottom: 0;
+        }
+
+        .submit-btn {
+            width: 100%; padding: 14px;
+            background: linear-gradient(135deg, var(--gold-main), var(--gold-deep));
+            color: #fff; border: none; border-radius: 8px;
+            font-size: 16px; font-weight: 500; cursor: pointer;
+        }
+
+        /* Status Messages */
+        .message {
+            padding: 10px; border-radius: 5px; margin-bottom: 15px;
+            font-size: 13px; text-align: center; display: none;
+        }
+        .error { background: #fee2e2; color: #991b1b; }
+        .success { background: #dcfce7; color: #166534; }
+        /* ---------- T&C Modal Styles ---------- */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-content {
+    background: var(--cream);
+    border: 1px solid var(--gold-main);
+    border-radius: 15px;
+    width: 100%;
+    max-width: 700px;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+    padding: 30px;
+    box-shadow: 0 15px 35px rgba(0,0,0,.2);
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px; right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--brown-mid);
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-modal:hover {
+    color: var(--gold-deep);
+}
+
+.modal-body .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.modal-body .service-card {
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,.04);
+    border-top: 3px solid var(--gold-main);
+}
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <a href="index.html" class="back-link">&larr; Return to Homepage</a>
+
+        <div class="auth-header">
+            <img src="assets/img/log.png" style="height:80px; margin-bottom:10px" alt="Logo">
+            <div class="brand-title">Bayugo Dental Clinic</div>
+            <div class="brand-subtitle">Dental Record Management System</div>
+        </div>
+
+        <div id="statusMsg" class="message"></div>
+
+        <div class="tab-container" id="tabContainer">
+            <button class="tab-button active" id="tab-l" onclick="switchTab('l')">Sign In</button>
+            <button class="tab-button" id="tab-r" onclick="switchTab('r')">Create Account</button>
+        </div>
+
+        <div id="panel-l" class="form-panel active">
+            <form id="loginForm">
+                <div class="input-group">
+                    <label>Email Address</label>
+                    <input type="email" id="loginEmail" placeholder="juandelacruz@gmail.com" required>
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required>
+                </div>
+                <a class="utility-link" onclick="showForgot()">Forgot Password?</a>
+                <button type="submit" class="submit-btn">Login</button>
+            </form>
+        </div>
+
+        <div id="panel-r" class="form-panel">
+                    <form id="registerForm">
+                        <div class="input-group">
+                            <label>Full Name</label>
+                            <input type="text" id="regName" placeholder="Juan Dela Cruz" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Email Address</label>
+                            <input type="email" id="regEmail" placeholder="juandelacruz@gmail.com" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Create Password</label>
+                            <input type="password" id="regPassword" placeholder="••••••••" required>
+                        </div>
+                        
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="terms" required>
+                            <label for="terms">I agree to the <a href="#" onclick="openTnc(event)" style="color: var(--gold-deep);">Terms and Conditions</a></label>
+                        </div>
+
+                        <button type="submit" class="submit-btn">Register Account</button>
+                    </form>
+                </div>
+
+        <div id="panel-f" class="form-panel">
+            <div style="text-align:center; margin-bottom:20px">
+                <h3>Reset Password</h3>
+                <p style="font-size:13px; color:var(--brown-mid)">Enter your email to receive instructions.</p>
+            </div><form id="forgotForm">
+        <div class="input-group">
+            <label>Email Address</label>
+            <input type="email" id="resetEmail" placeholder="juandelacruz@gmail.com" required>
+        </div>
+        <button type="submit" class="submit-btn">Send Reset Link</button>
+        <a class="utility-link" style="text-align:center; margin-top:15px; display:block; cursor:pointer;" onclick="switchTab('l')">Back to Sign In</a>
+    </form>
+
+    <div id="successMessage" style="display: none; text-align: center; padding: 20px;">
+        <h3 style="margin-bottom: 10px;">Email Sent!</h3>
+        <p style="margin-bottom: 20px;">Please check your email for the password reset link and instructions.</p>
+        <a class="utility-link" style="cursor:pointer;" onclick="switchTab('l')">Back to Sign In</a>
+    </div>
+        </div>
+    </div>
+
+    <div id="tncModal" class="modal-overlay" onclick="if(event.target===this)closeTnc()">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeTnc()">&times;</span>
+        <h2 style="text-align:center; color: var(--gold-deep); margin-bottom: 20px; font-family: 'Playfair Display', serif;">Terms and Conditions</h2>
+        
+        <div class="modal-body">
+            <div style="margin-bottom: 20px; text-align: left; color: #555; line-height: 1.6; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,.05); border-top: 3px solid var(--gold-main);">
+                <h3 style="margin-bottom: 15px; color: var(--gold-deep); text-align: center; font-family: 'Playfair Display', serif;">Patient Information Form and Orthodontic Service Agreement</h3>
+                <p style="margin-bottom: 10px; font-size: 13px;">I appreciate your confidence in selecting our office for your orthodontic treatment. I want you to be fully informed and feel free to ask me questions at any time. Please understand that an important part of your treatment includes making models, x-rays, and photographs for your records.</p>
+                <p style="font-size: 13px;">As a rule, excellent orthodontic results can be achieved with informed and cooperative patients, so I routinely supply the following information to all my patients considering orthodontic treatment. While recognizing the benefits of a pleasing smile and healthy functional teeth, you should also be aware that orthodontic therapy, like any other treatment of the body, has some hazards, inconveniences and limitations.</p>
+            </div>
+
+            <div class="services-grid">
+                <div class="service-card" style="text-align: left;">
+                    <h4 style="color: var(--gold-deep); font-family: 'Playfair Display', serif; margin-bottom: 5px;">Discomfort</h4>
+                    <p style="color: #555; line-height: 1.5; font-size: 12px;">When appliances are first fitted, and sometimes at routine patient visits when the appliances may be modified or tightened, the patient can expect some discomfort and perhaps even some soreness.</p>
+                </div>
+                <div class="service-card" style="text-align: left;">
+                    <h4 style="color: var(--gold-deep); font-family: 'Playfair Display', serif; margin-bottom: 5px;">Dental Hygiene</h4>
+                    <p style="color: #555; line-height: 1.5; font-size: 12px;">Decalcification, tooth decay or gum disease can occur during orthodontic therapy if patients do not brush and floss properly and thoroughly, as instructed.</p>
+                </div>
+                <div class="service-card" style="text-align: left;">
+                    <h4 style="color: var(--gold-deep); font-family: 'Playfair Display', serif; margin-bottom: 5px;">Irregularities</h4>
+                    <p style="color: #555; line-height: 1.5; font-size: 12px;">Tooth positions constantly change throughout life. After orthodontic treatment is completed, patients are subject to the same subtle changes that occur in non-orthodontic patients.</p>
+                </div>
+                <div class="service-card" style="text-align: left;">
+                    <h4 style="color: var(--gold-deep); font-family: 'Playfair Display', serif; margin-bottom: 5px;">Non-Orthodontic Care</h4>
+                    <p style="color: #555; line-height: 1.5; font-size: 12px;">Cold sores, canker sores and irritation or injury to the mouth are possible while wearing braces.</p>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px; text-align: left; color: #555; line-height: 1.6; background: rgba(255,255,255,0.5); padding: 20px; border-radius: 10px; border: 1px solid var(--gold-glow);">
+                <h3 style="color: var(--gold-deep); margin-bottom: 15px; text-align: center; font-family: 'Playfair Display', serif;">Treatment Completion & Payment Agreement</h3>
+                <p style="margin-bottom: 10px; font-size: 13px;"><strong>Early Completion of Treatment / Operation:</strong> If the treatment and/or operation are completed before the payment period as stipulated above, the remaining balance becomes immediately due and demandable.</p>
+                <hr style="border: 0; border-top: 1px solid var(--gold-glow); margin: 15px 0;">
+                <p style="margin-bottom: 10px; font-size: 13px;">Lost and damage of the appliances installed during treatment like brackets, wires, molar band will be paid by patient.</p>
+                <p style="font-size: 13px;">If the patient will decide to discontinue the treatment the patient must pay debonding and all orthodontic treatment phases that has been done already except for the phases that has not been rendered.</p>
+            </div>
+            
+            <div style="text-align: center; margin-top: 25px;">
+                <button type="button" class="submit-btn" style="width: auto; padding: 10px 40px;" onclick="acceptTnc()">I Agree & Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script>
+        const statusMsg = document.getElementById('statusMsg');
+
+        // Helper to show messages
+        function showMsg(text, type) {
+            statusMsg.innerText = text;
+            statusMsg.className = `message ${type}`;
+            statusMsg.style.display = 'block';
+            setTimeout(() => { statusMsg.style.display = 'none'; }, 3000);
+        }
+
+        // Tab Switching Logic
+        window.switchTab = (tab) => {
+            document.getElementById('tabContainer').style.display = 'flex';
+            document.querySelectorAll('.form-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+            document.getElementById(`panel-${tab}`).classList.add('active');
+            document.getElementById(`tab-${tab}`).classList.add('active');
+        };
+
+        window.showForgot = () => {
+            document.getElementById('tabContainer').style.display = 'none';
+            document.querySelectorAll('.form-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('panel-f').classList.add('active');
+        };
+
+        // --- REGISTRATION LOGIC ---
+        document.getElementById('registerForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('regName').value;
+    const email = document.getElementById('regEmail').value;
+    const password = document.getElementById('regPassword').value;
+
+    // Get existing users from localStorage or empty array
+    let users = JSON.parse(localStorage.getItem('drms_users')) || [];
+
+    // Check if user exists
+    if (users.find(u => u.email === email)) {
+        showMsg("Email already registered!", "error");
+    } else {
+        users.push({ name, email, password });
+        localStorage.setItem('drms_users', JSON.stringify(users));
+        showMsg("Registration successful! Try logging in.", "success");
+        
+        // This clears the input fields!
+        e.target.reset(); 
+        
+        switchTab('l');
+    }
+});
+
+// --- LOGIN LOGIC WITH MASTER ACCOUNTS ---
+document.getElementById('loginForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    // Get the values from the inputs
+    const email = document.getElementById('loginEmail').value.toLowerCase();
+    const password = document.getElementById('loginPassword').value;
+
+    // 1. CHECK FOR MASTER ADMIN (Hardcoded for presentation)
+    if (email === "admin@bayugodental.com" && password === "admin123") {
+        showMsg("Welcome Admin. Redirecting...", "success");
+        localStorage.setItem('currentUser', JSON.stringify({ name: "System Admin", role: "admin" }));
+        
+        setTimeout(() => {
+            window.location.href = "admin_dash.html"; 
+        }, 1000);
+        return; // Stop here so it doesn't look in localStorage
+    }
+
+    // 3. REGULAR USER CHECK (Looks at accounts registered during the demo)
+    let users = JSON.parse(localStorage.getItem('drms_users')) || [];
+    const user = users.find(u => u.email.toLowerCase() === email && u.password === password);
+
+    if (user) {
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        showMsg("Login successful!", "success");
+        setTimeout(() => {
+            window.location.href = "patient_dash.html"; 
+        }, 1000);
+    } else {
+        showMsg("Invalid email or password.", "error");
+    }
+});
+document.getElementById('forgotForm').addEventListener('submit', function(event) {
+        // Stop the form from submitting normally
+        event.preventDefault(); 
+        
+        // Pop up the browser notification
+        alert("Email Sent!\n\nPlease check your email for the password reset link.");
+        
+        // Refresh the page immediately after they click OK
+        location.reload(); 
+    });// --- TERMS & CONDITIONS MODAL LOGIC ---
+window.openTnc = (e) => {
+    e.preventDefault();
+    document.getElementById('tncModal').style.display = 'flex';
+};
+
+window.closeTnc = () => {
+    document.getElementById('tncModal').style.display = 'none';
+};
+
+window.acceptTnc = () => {
+    document.getElementById('terms').checked = true;
+    closeTnc();
+};
+    </script>
+</body>
+</html>

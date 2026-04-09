@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DRMS - Authentication</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ---------- CSS Variables (Restored Names) ---------- */
+        :root {
+            --gold-main: #D4AF37;
+            --gold-deep: #AA801E;
+            --gold-pale: #F3E5AB;
+            --cream: #FDFBF7;
+            --glass-white: rgba(255,255,255,0.9);
+            --brown-dark: #2C2416;
+            --brown-mid: #6B5E4A;
+            --gold-glow: rgba(212,175,55,0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--brown-dark);
+            background: linear-gradient(135deg, #fdfbfb 0%, #e0e4e6 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        h1, h2, h3, .brand-title {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Auth Container */
+        .auth-container {
+            background: var(--glass-white);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--gold-glow);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,.08), 0 5px 15px rgba(212,175,55,.15);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Back Link */
+        .back-link {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            font-size: 12px;
+            color: var(--brown-mid);
+            text-decoration: none;
+            transition: color .3s;
+        }
+        .back-link:hover {
+            color: var(--gold-deep);
+        }
+
+        /* Header Section */
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo-circle {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 15px;
+            border: 2px solid var(--gold-main);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            color: var(--gold-main);
+            box-shadow: 0 0 20px rgba(212,175,55,.2);
+        }
+        .brand-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--gold-deep);
+        }
+        .brand-subtitle {
+            font-size: 13px;
+            color: var(--brown-mid);
+            margin-top: 5px;
+        }
+
+        /* Tab Navigation */
+        .tab-container {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #eee;
+        }
+        .tab-button {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 10px 0;
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--brown-mid);
+            cursor: pointer;
+            transition: all .3s ease;
+            position: relative;
+        }
+        .tab-button.active {
+            color: var(--gold-deep);
+        }
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--gold-main);
+        }
+
+        /* Form Panels */
+        .form-panel {
+            display: none;
+            animation: fadeSlideIn .4s ease forwards;
+        }
+        .form-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Input Groups */
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            color: var(--brown-mid);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            background: #fff;
+            transition: all .3s;
+            color: var(--brown-dark);
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--gold-main);
+            box-shadow: 0 0 0 3px rgba(212,175,55,.1);
+        }
+        .error-message {
+            color: #d9534f;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+        .error-message.show {
+            display: block;
+        }
+
+        /* Utility Links */
+        .utility-link {
+            display: block;
+            text-align: right;
+            font-size: 12px;
+            color: var(--gold-deep);
+            text-decoration: none;
+            margin-top: -10px;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+        .utility-link:hover {
+            text-decoration: underline;
+        }
+        .utility-link.centered {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 0;
+            display: inline-block;
+            width: 100%;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--gold-main), var(--gold-deep));
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform .2s, box-shadow .2s;
+            box-shadow: 0 4px 15px rgba(212,175,55,.3);
+        }
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212,175,55,.4);
+        }
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Forgot Header */
+        .forgot-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .forgot-header h3 {
+            color: var(--gold-deep);
+            margin-bottom: 5px;
+        }
+        .forgot-header p {
+            font-size: 13px;
+            color: var(--brown-mid);
+        }
+
+        /* Success Message */
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .success-message.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <!-- Back to Homepage Link -->
+        <a href="index.html" class="back-link">&larr; Return to Homepage</a>
+
+        <!-- Header Section with Logo -->
+        <div class="auth-header">
+            <img src="assets/img/log.png" style="height:80px; vertical-align:middle; margin-bottom:-10px" alt="Bayugo Dental Logo">
+            <div class="brand-title">Bayugo Dental Clinic</div>
+            <div class="brand-subtitle">Dental Record Management System</div>
+        </div>
+
+
+        <!-- Forgot Password Panel (Updated with Set New Password and Confirm Password) -->
+        <div id="panel-f" class="form-panel active">
+            <div class="forgot-header">
+                <h3>Reset Password</h3>
+                <p>Set a new password.</p>
+            </div>
+            <div id="resetSuccessMessage" class="success-message"></div>
+            <form id="resetPasswordForm" onsubmit="event.preventDefault(); handlePasswordReset();">
+                
+                <div class="input-group">
+                    <label for="newPassword">New Password</label>
+                    <input type="password" id="newPassword" placeholder="Enter new password" required>
+                </div>
+                <div class="input-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" placeholder="Confirm new password" required>
+                    <div id="passwordError" class="error-message">Passwords do not match.</div>
+                </div>
+                <button type="submit" class="submit-btn">Change Password</button>
+                <a class="utility-link centered" onclick="showLogin()">Back to Sign In</a>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Helper to get element by ID
+        const getElem = (id) => document.getElementById(id);
+
+        // Hide all form panels
+        const hideAllPanels = () => {
+            ['panel-l', 'panel-r', 'panel-f'].forEach(panelId => {
+                getElem(panelId).classList.remove('active');
+            });
+        };
+
+        // Switch between Sign In (l) and Register (r)
+        window['switchTab'] = (tabType) => {
+            // Hide any visible success/error messages
+            const successMsg = getElem('resetSuccessMessage');
+            if (successMsg) successMsg.classList.remove('show');
+            
+            // Show tab container (in case it was hidden)
+            getElem('tabContainer').style.display = 'flex';
+            // Remove active class from both tab buttons
+            ['tab-l', 'tab-r'].forEach(btnId => {
+                getElem(btnId).classList.remove('active');
+            });
+            // Hide all panels
+            hideAllPanels();
+            // Activate selected tab button and corresponding panel
+            getElem(`tab-${tabType}`).classList.add('active');
+            getElem(`panel-${tabType}`).classList.add('active');
+        };
+
+        // Show forgot password panel (hides tab container)
+        window['showForgot'] = () => {
+            // Reset the form fields and hide any messages
+            const resetForm = getElem('resetPasswordForm');
+            if (resetForm) resetForm.reset();
+            const errorMsg = getElem('passwordError');
+            if (errorMsg) errorMsg.classList.remove('show');
+            const successMsg = getElem('resetSuccessMessage');
+            if (successMsg) successMsg.classList.remove('show');
+            
+            getElem('tabContainer').style.display = 'none';
+            hideAllPanels();
+            getElem('panel-f').classList.add('active');
+        };
+
+        // Return to login panel from forgot
+        window['showLogin'] = () => switchTab('l');
+
+        // Handle password reset logic
+        window['handlePasswordReset'] = () => {
+            const email = getElem('forgotEmail').value;
+            const newPassword = getElem('newPassword').value;
+            const confirmPassword = getElem('confirmPassword').value;
+            const errorMsg = getElem('passwordError');
+            const successMsg = getElem('resetSuccessMessage');
+
+            // Basic validation
+            if (!email) {
+                alert('Please enter your email address.');
+                return;
+            }
+
+            if (!newPassword || newPassword.length < 6) {
+                alert('Password must be at least 6 characters long.');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                errorMsg.classList.add('show');
+                return;
+            } else {
+                errorMsg.classList.remove('show');
+            }
+
+            // If validation passes, simulate password reset
+            // In a real application, you would send this data to your backend API
+            console.log('Password reset requested for:', email);
+            console.log('New password set (secured, would be hashed in production)');
+
+            // Show success message
+            successMsg.innerHTML = 'Password reset successfully! You can now sign in with your new password.';
+            successMsg.classList.add('show');
+
+            // Clear the form fields
+            getElem('resetPasswordForm').reset();
+
+            // Automatically redirect to login after 2 seconds
+            setTimeout(() => {
+                showLogin();
+            }, 2000);
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bayugo Dental - Patient Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --gold-main: #D4AF37;
+            --gold-deep: #AA801E;
+            --gold-pale: #F3E5AB;
+            --cream: #FDFBF7;
+            --glass-white: rgba(255,255,255,0.92);
+            --brown-dark: #2C2416;
+            --brown-mid: #6B5E4A;
+            --gold-glow: rgba(212,175,55,0.25);
+            --sidebar-bg: #1a1a1a;
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; color: var(--brown-dark); background: linear-gradient(135deg, #f8f6f0 0%, #e8e6df 100%); min-height: 100vh; }
+        h1, h2, h3, .brand-text { font-family: 'Playfair Display', serif; }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        .sidebar {
+            width: 280px;
+            background-image: linear-gradient(rgba(0,0,0,.384), rgba(0,0,0,.418)), url('assets/img/woodbg.jpg');
+            
+            backdrop-filter: blur(8px);
+            border-right: 1px solid var(--gold-glow);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            flex-direction: column; /* Stacks the image and text vertically */
+            align-items: center;    /* Centers them horizontally */
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            text-align: center;
+        }
+
+        .sidebar-logo img {
+            height: 45px;
+        }
+
+        .sidebar-logo span {
+            margin-top: -5px;
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            font-weight: 300;
+            color: var(--gold-main);
+        }
+
+        .sidebar-logo a {
+            margin-top: -10px;
+            font-family: 'Playfair Display', serif;
+            font-size: 15px;
+            font-weight: 200;
+            color: var(--gold-main);
+        }
+        .nav-menu { list-style: none; flex: 1; }
+        .nav-item { margin-bottom: 8px; }
+        .nav-link { display: flex; align-items: center; gap: 14px; padding: 12px 16px; color: var(--gold-deep); text-decoration: none; font-size: 15px; font-weight: 500; border-radius: 12px; transition: all 0.3s ease; cursor: pointer; }
+        .nav-link i { width: 24px; font-size: 18px; color: var(--gold-main); }
+        .nav-link:hover, .nav-link.active { background: linear-gradient(90deg, rgba(212, 175, 55, 0.2), transparent); color: var(--gold-main); border-left: 3px solid var(--gold-main); }
+        .logout-btn { transition: all 0.3s ease; margin-top: 30px; padding: 12px; background: rgba(212,175,55,0.15); border-radius: 12px; text-align: center; cursor: pointer; color: #ccc; font-weight: 500; display: flex; align-items: center; gap: 12px; justify-content: center; }
+        .logout-btn:hover { transform: translateY(-5px); background: rgba(212,175,55,0.3); color: var(--gold-main); }
+        .main-content { flex: 1; padding: 30px 35px; overflow-x: auto; }
+        .welcome-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px; }
+        .welcome-header h1 { font-size: 28px; color: var(--brown-dark); }
+        .welcome-header h1 span { color: var(--gold-deep); }
+        .date-badge { background: var(--glass-white); padding: 8px 18px; border-radius: 40px; border: 1px solid var(--gold-glow); font-size: 14px; display: flex; align-items: center; gap: 8px; }
+        .card { background: var(--glass-white); backdrop-filter: blur(8px); border: 1px solid var(--gold-glow); border-radius: 24px; padding: 20px; box-shadow: var(--card-shadow); margin-bottom: 25px; }
+        .card-title { font-size: 18px; font-weight: 600; color: var(--gold-deep); margin-bottom: 18px; border-left: 3px solid var(--gold-main); padding-left: 12px; display: flex; align-items: center; gap: 8px; }
+        .btn { background: var(--gold-main); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; margin: 5px; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-sm { background: var(--gold-main); color: white; border: none; padding: 4px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-outline { background: transparent; border: 1px solid var(--gold-main); color: var(--gold-deep); }
+        .btn-outline:hover { background: var(--gold-main); color: white; }
+        .btn-danger { background: #dc3545; }
+        .btn-danger:hover { background: #c82333; }
+        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; display: inline-block; }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-confirmed { background: #d4edda; color: #155724; }
+        .status-cancelled { background: #f8d7da; color: #721c24; }
+        .data-table { width: 100%; border-collapse: collapse; background: white; border-radius: 16px; overflow: hidden; }
+        .data-table th, .data-table td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        .data-table th { background: var(--gold-pale); }
+        .daily-record-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 15px; }
+        .daily-record-table th, .daily-record-table td { border: 1px solid #ddd; padding: 10px 8px; text-align: left; }
+        .daily-record-table th { background: var(--gold-pale); }
+        .form-row { display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
+        .form-group { flex: 1; min-width: 150px; }
+        .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--brown-mid); margin-bottom: 5px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Poppins'; }
+        .message-item { padding: 15px; background: white; border-radius: 12px; margin-bottom: 12px; border-left: 4px solid var(--gold-main); }
+        .message-reply { background: var(--gold-pale); padding: 10px; border-radius: 8px; margin-top: 10px; font-size: 13px; }
+        .time-slot { display: inline-block; padding: 6px 12px; margin: 5px; border: 1px solid var(--gold-main); border-radius: 20px; cursor: pointer; font-size: 12px; transition: 0.2s; }
+        .time-slot.selected { background: var(--gold-main); color: white; }
+        .time-slot.disabled { opacity: 0.4; cursor: not-allowed; background: #eee; }
+        .time-slot.available:hover { background: var(--gold-pale); }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: white; border-radius: 28px; max-width: 500px; width: 90%; padding: 25px; max-height: 85vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid var(--gold-pale); padding-bottom: 12px; }
+        .close-modal { font-size: 28px; cursor: pointer; }
+        .patient-info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .patient-info-item label { font-size: 11px; color: var(--brown-mid); display: block; font-weight: 600; }
+        .patient-info-item span { font-weight: 500; font-size: 14px; }
+        .medical-history-card { background: #fffdf8; border: 1px solid #d4c5a0; border-radius: 12px; padding: 20px; margin-bottom: 15px; }
+        .mh-row { margin-bottom: 8px; display: flex; flex-wrap: wrap; gap: 8px; font-size: 13px; }
+        @media (max-width: 900px) { .sidebar { width: 80px; padding: 20px 10px; } .sidebar-logo span, .nav-link span, .logout-btn span { display: none; } .nav-link i, .logout-btn i { margin: 0 auto; } .logout-btn { justify-content: center; } }
+    </style>
+</head>
+<body>
+<div class="dashboard-container">
+    <aside class="sidebar"><center><img src="assets/img/log.png" width="65px" alt="Logo"></center>
+        <div class="sidebar-logo">
+            <span>BAYUGO DENTAL CLINIC</span>
+            <a>PATIENT PORTAL</a></div>
+        <ul class="nav-menu">
+            <li class="nav-item"><a class="nav-link active" onclick="switchSection('dashboard')"><i class="fas fa-tachometer-alt"></i><span> Dashboard</span></a></li>
+            <li class="nav-item"><a class="nav-link" onclick="switchSection('book')"><i class="fas fa-calendar-plus"></i><span> Book Appointment</span></a></li>
+            <li class="nav-item"><a class="nav-link" onclick="switchSection('records')"><i class="fas fa-folder-open"></i><span> My Records</span></a></li>
+            <li class="nav-item"><a class="nav-link" onclick="switchSection('messages')"><i class="fas fa-envelope"></i><span> Messages</span></a></li>
+            <li class="nav-item"><a class="nav-link" onclick="switchSection('reviews')"><i class="fas fa-folder-open"></i><span> My Reviews</span></a></li>
+            <li class="nav-item"><a class="nav-link" onclick="switchSection('account')"><i class="fas fa-user-cog"></i><span> My Account</span></a></li>
+        </ul>
+        <div class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i><span> Log Out</span></div>
+    </aside>
+
+    <main class="main-content">
+        <div id="dashboardView">
+            <div class="welcome-header"><h1>Welcome, <span id="patientNameDisplay">User</span> <i class="fas fa-smile-wink"></i></h1><div class="date-badge"><i class="far fa-calendar-alt"></i> <span id="currentDate"></span></div></div>
+            <div class="card"><div class="card-title"><i class="fas fa-calendar-day"></i> Upcoming Appointments</div><div id="upcomingAppointmentsList">Loading...</div></div>
+            <div class="card"><div class="card-title"><i class="fas fa-bell"></i> Recent Notifications</div><div id="notificationList">No new notifications</div></div>
+
+            <div class="card-title">
+                <h2>Announcements & Promos</h2>
+            </div>
+            
+            <div class="card">
+                <div class="card">
+                    <div class="service-icon">🎉</div>
+                    <h3>New Weekend Hours</h3>
+                    <p>We are now open on Saturdays from 8:00 AM to 4:00 PM to better accommodate your busy schedule!</p>
+                </div>
+                
+                <div class="card">
+                    <div class="service-icon">✨</div>
+                    <h3>Summer Whitening Promo</h3>
+                    <p>Get Discounts on all professional teeth whitening treatments until the end of the month. Book your slot today!</p>
+                </div>
+                
+                <div class="card">
+                    <div class="service-icon">👴👵</div>
+                    <h3>Senior Discount</h3>
+                    <p>Present your valid Senior Citzens ID to receive a discount on general cleaning and preventative care.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="bookView" style="display:none;">
+            <div class="card"><div class="card-title"><i class="fas fa-calendar-check"></i> Book a New Appointment</div>
+                <div class="form-row"><div class="form-group"><label>Select Date</label><input type="date" id="appointmentDate" min="" onchange="loadAvailableSlots()"></div></div>
+                <div class="form-group"><label>Available Time Slots</label><div id="timeSlotsContainer" style="margin-top:10px;">Select a date first</div></div>
+                <div class="form-group"><label>Procedure / Concern</label><textarea id="appointmentProcedure" rows="2" placeholder="e.g., Tooth extraction, cleaning, consultation..."></textarea></div>
+                <button class="btn" onclick="reviewAppointment()"><i class="fas fa-eye"></i> Review & Confirm</button>
+            </div>
+            <div class="card"><div class="card-title"><i class="fas fa-list-alt"></i> My Appointments</div><div id="myAppointmentsList">Loading...</div></div>
+        </div>
+
+        <div id="recordsView" style="display:none;">
+            <div class="card"><div class="card-title"><i class="fas fa-user-circle"></i> My Information</div><div id="patientInfoDisplay"></div></div>
+            <div class="card"><div class="card-title"><i class="fas fa-tooth"></i> Daily Treatment Records</div><div id="patientDailyRecords">Loading...</div></div>
+            <div class="card"><div class="card-title"><i class="fas fa-notes-medical"></i> Medical History Records</div><div id="patientMedicalHistory">Loading...</div></div>
+            <div class="card"><div class="card-title"><i class="fas fa-file-prescription"></i> Treatment Plan</div><div id="patientTreatmentPlan">No treatment plan yet.</div></div>
+        </div>
+
+        <div id="reviewsView" style="display:none;">
+            <div class="card">
+                <div class="card-title"><i class="fas fa-star-half-alt"></i> Leave a Review</div>
+                <div class="form-row">
+                    <div class="form-group" style="max-width: 200px;">
+                        <label>Rating</label>
+                        <select id="reviewRating">
+                            <option value="5">⭐⭐⭐⭐⭐ (5) Excellent</option>
+                            <option value="4">⭐⭐⭐⭐ (4) Very Good</option>
+                            <option value="3">⭐⭐⭐ (3) Good</option>
+                            <option value="2">⭐⭐ (2) Fair</option>
+                            <option value="1">⭐ (1) Poor</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Your Feedback</label>
+                    <textarea id="reviewText" rows="3" placeholder="Tell us about your experience..." style="width:100%; padding:12px; border-radius:12px; border:1px solid #ddd;"></textarea>
+                </div>
+                <button class="btn" onclick="submitReview()"><i class="fas fa-paper-plane"></i> Submit Review</button>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><i class="fas fa-comments"></i> My Past Reviews</div>
+                <div id="myReviewsList">Loading...</div>
+            </div>
+        </div>
+
+        <div id="messagesView" style="display:none;">
+            <div class="card"><div class="card-title"><i class="fas fa-paper-plane"></i> Send Message to Clinic</div>
+                <textarea id="newMessageText" rows="3" placeholder="Type your inquiry or message here..." style="width:100%; padding:12px; border-radius:12px; border:1px solid #ddd; margin-bottom:10px;"></textarea>
+                <button class="btn" onclick="sendPatientMessage()"><i class="fas fa-send"></i> Send Message</button>
+            </div>
+            <div class="card"><div class="card-title"><i class="fas fa-inbox"></i> Conversation & Notifications</div><div id="patientMessagesList">Loading...</div></div>
+        </div>
+        <div id="accountView" style="display:none;">
+            <div class="card">
+                <div class="card-title"><i class="fas fa-user-edit"></i> Edit Profile</div>
+                <div class="form-row">
+                    <div class="form-group"><label>Full Name</label><input type="text" id="accName"></div>
+                    <div class="form-group"><label>Email Address</label><input type="email" id="accEmail"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Age</label><input type="number" id="accAge"></div>
+                    <div class="form-group">
+                        <label>Sex</label>
+                        <select id="accSex">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                            <option value="N/A">N/A</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Contact Number</label><input type="text" id="accContact" placeholder="e.g. 09123456789"></div>
+                </div>
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label>Complete Address</label>
+                    <textarea id="accAddress" rows="2" placeholder="Your full address"></textarea>
+                </div>
+                <button class="btn" onclick="updateAccount()"><i class="fas fa-save"></i> Save Changes</button>
+            </div>
+            <div class="card" style="margin-top: 20px; margin-bottom: 20px;">
+                <div class="card-title"><i class="fas fa-lock"></i> Security</div>
+                <div class="form-row">
+                    <div class="form-group" style="position: relative;">
+                        <label>Current Password</label>
+                        <input type="password" id="accCurrentPass" placeholder="Enter current password">
+                        <i class="fas fa-eye" onclick="togglePassword('accCurrentPass', this)" style="position: absolute; right: 15px; top: 38px; cursor: pointer; color: var(--brown-mid);"></i>
+                    </div>
+                    <div class="form-group" style="position: relative;">
+                        <label>New Password</label>
+                        <input type="password" id="accNewPass" placeholder="Enter new password">
+                        <i class="fas fa-eye" onclick="togglePassword('accNewPass', this)" style="position: absolute; right: 15px; top: 38px; cursor: pointer; color: var(--brown-mid);"></i>
+                    </div>
+                </div>
+                <p style="font-size: 12px; color: #666; margin-top: -10px;">Leave blank if you do not wish to change your password.</p>
+            </div>
+            <div class="card" style="border-color: #f5c6cb; background-color: #fffdfd;">
+                <div class="card-title" style="color: #dc3545; border-left-color: #dc3545;"><i class="fas fa-exclamation-triangle"></i> Danger Zone</div>
+                <p style="font-size: 13px; margin-bottom: 15px;">Once you delete your account, there is no going back. This will revoke your access to the patient portal.</p>
+                <button class="btn btn-danger" onclick="deleteAccount()"><i class="fas fa-trash-alt"></i> Delete My Account</button>
+            </div>
+        </div>
+    </main>
+</div>
+
+<div id="reviewModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>Confirm Appointment</h2><span class="close-modal" onclick="closeReviewModal()">&times;</span></div><div id="reviewDetails"></div><div style="display:flex; gap:10px; margin-top:20px;"><button class="btn" onclick="submitAppointment()"><i class="fas fa-check"></i> Confirm Booking</button><button class="btn btn-outline" onclick="closeReviewModal()"><i class="fas fa-times"></i> Cancel</button></div></div></div>
+
+<script>
+    
+    // Storage (sync with admin dashboard)
+    let patients = JSON.parse(localStorage.getItem('patients') || '[]');
+    let appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+    let dailyRecords = JSON.parse(localStorage.getItem('dailyRecords') || '{}');
+    let patientHistories = JSON.parse(localStorage.getItem('patientHistories') || '{}');
+    let treatmentPlans = JSON.parse(localStorage.getItem('treatmentPlans') || '{}');
+    let messages = JSON.parse(localStorage.getItem('messages') || '[]');
+    let reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
+    
+    let currentPatient = null;
+    let selectedSlot = null;
+    let pendingAppointment = null;
+
+    function formatDateYMD(date) { let d = new Date(date); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+    function formatDateDMY(dateStr) { if(!dateStr) return 'N/A'; let d = new Date(dateStr); if(isNaN(d.getTime())) return dateStr; return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`; }
+    function getElem(id) { return document.getElementById(id); }
+    function saveAll() { 
+        
+        localStorage.setItem('patients', JSON.stringify(patients));
+        localStorage.setItem('appointments', JSON.stringify(appointments));
+        localStorage.setItem('dailyRecords', JSON.stringify(dailyRecords));
+        localStorage.setItem('patientHistories', JSON.stringify(patientHistories));
+        localStorage.setItem('treatmentPlans', JSON.stringify(treatmentPlans));
+        localStorage.setItem('messages', JSON.stringify(messages));
+        localStorage.setItem('reviews', JSON.stringify(reviews));
+    }
+
+    // Initialize demo data if empty// 1. Initialize demo data if the "database" is completely empty
+    if(patients.length === 0) {
+        patients = [{ 
+            id: 1001, 
+            name: 'Juan Dela Cruz', 
+            age: 25, 
+            sex: 'Male', 
+            email: 'juandelacruz@gmail.com', 
+            address: 'Bangued, Abra', 
+            contact: '09123456789', 
+            lastVisit: formatDateDMY(new Date()), 
+            status: 'active', 
+            archivedDate: null 
+        }];
+        saveAll();
+    }
+
+    // --- NEW LOGIN INTEGRATION ---
+    // 2. Grab the logged-in user from localStorage
+    let loggedInUser = JSON.parse(localStorage.getItem('currentUser'));
+
+    // 3. Security Check: If nobody is logged in, send them back to login
+    if (!loggedInUser) {
+        window.location.href = 'login.html';
+    } else {
+        // 4. Try to find the logged-in user in our existing patients array
+        currentPatient = patients.find(p => p.email.toLowerCase() === loggedInUser.email.toLowerCase());
+
+        // 5. If they aren't in the database yet (a newly registered account!), add them
+        if (!currentPatient) {
+            currentPatient = {
+                id: Date.now(), // Generates a unique ID based on the current timestamp
+                name: loggedInUser.name,
+                email: loggedInUser.email,
+                age: 'N/A',
+                sex: 'N/A',
+                address: 'Please update profile',
+                contact: 'N/A',
+                lastVisit: 'First Visit',
+                status: 'active',
+                archivedDate: null
+            };
+            
+            // Add the new user to the database alongside Juan Dela Cruz
+            patients.push(currentPatient);
+            saveAll(); 
+        }
+    }
+    // --- REVIEWS LOGIC ---
+// --- UPDATE switchSection() ---
+// Find your existing switchSection function and replace the 'activeMap' and 'if' statements with this:
+window.switchSection = (section) => {
+    const views = ['dashboardView', 'bookView', 'recordsView', 'messagesView', 'reviewsView', 'accountView'];
+    views.forEach(v => { let el = getElem(v); if(el) el.style.display = 'none'; });
+    
+    let activeMap = { 
+        dashboard: 'dashboardView', 
+        book: 'bookView', 
+        records: 'recordsView', 
+        messages: 'messagesView',
+        reviews: 'reviewsView',
+        account: 'accountView' 
+    };
+    
+    let active = getElem(activeMap[section]); 
+    if(active) active.style.display = 'block';
+    
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    if(event && event.target) { let link = event.target.closest('.nav-link'); if(link) link.classList.add('active'); }
+    
+    if(section === 'dashboard') { renderDashboardUpcoming(); renderNotifications(); }
+    if(section === 'book') { renderMyAppointments(); getElem('appointmentDate').setAttribute('min', formatDateYMD(new Date())); }
+    if(section === 'records') { renderPatientInfo(); renderPatientDailyRecords(); renderPatientMedicalHistory(); renderPatientTreatmentPlan(); }
+    if(section === 'messages') renderPatientMessages();
+    if(section === 'reviews') renderReviews(); 
+    if(section === 'account') renderAccountDetails(); // Load current data into the form
+};
+    // ------------------------------
+    
+    if(appointments.length === 0 && currentPatient) {
+        let tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate()+1);
+        appointments.push({ id: 2001, patientId: currentPatient.id, patientName: currentPatient.name, date: formatDateYMD(tomorrow), time: '10:00 AM', procedure: 'Dental Cleaning', status: 'pending', createdAt: new Date().toISOString() });
+        saveAll();
+    }
+
+    // Helper: Get available time slots based on clinic hours (Mon-Sat 9am-6pm, Tue 12pm-6pm)
+    function getAvailableTimeSlotsForDate(dateStr) {
+        let date = new Date(dateStr);
+        let dayOfWeek = date.getDay();
+        if(dayOfWeek === 0) return [];
+        let startHour = (dayOfWeek === 2) ? 12 : 9;
+        let slots = [];
+        for(let h = startHour; h < 18; h++) {
+            let period = h < 12 ? 'AM' : 'PM';
+            let hour12 = h > 12 ? h-12 : (h === 12 ? 12 : h);
+            slots.push(`${hour12}:00 ${period}`);
+        }
+        let bookedSlots = appointments.filter(a => a.date === dateStr && (a.status === 'confirmed' || a.status === 'approved') && a.patientId === currentPatient?.id).map(a => a.time);
+        let pendingSlots = appointments.filter(a => a.date === dateStr && a.status === 'pending' && a.patientId === currentPatient?.id).map(a => a.time);
+        return slots.map(slot => ({ time: slot, available: !bookedSlots.includes(slot) && !pendingSlots.includes(slot) }));
+    }
+    
+    function loadAvailableSlots() {
+        let date = getElem('appointmentDate').value;
+        if(!date) return;
+        let slots = getAvailableTimeSlotsForDate(date);
+        let container = getElem('timeSlotsContainer');
+        if(slots.length === 0) { container.innerHTML = '<p>No available slots (clinic closed or fully booked).</p>'; return; }
+        let html = '<div style="display:flex; flex-wrap:wrap;">';
+        slots.forEach(slot => {
+            let disabledClass = !slot.available ? 'disabled' : 'available';
+            let onclickAttr = slot.available ? `onclick="selectTimeSlot('${slot.time}')"` : '';
+            let selectedClass = (selectedSlot === slot.time) ? 'selected' : '';
+            html += `<div class="time-slot ${disabledClass} ${selectedClass}" ${onclickAttr}>${slot.time}</div>`;
+        });
+        html += '</div>';
+        container.innerHTML = html;
+    }
+    
+    window.selectTimeSlot = (time) => { selectedSlot = time; loadAvailableSlots(); };
+    
+    window.reviewAppointment = () => {
+        let date = getElem('appointmentDate').value;
+        let procedure = getElem('appointmentProcedure').value;
+        if(!date) { alert("Please select a date"); return; }
+        if(!selectedSlot) { alert("Please select a time slot"); return; }
+        if(!procedure.trim()) { alert("Please describe your procedure"); return; }
+        pendingAppointment = { date, time: selectedSlot, procedure };
+        getElem('reviewDetails').innerHTML = `<p><strong>Patient:</strong> ${currentPatient.name}</p><p><strong>Date:</strong> ${formatDateDMY(date)}</p><p><strong>Time:</strong> ${selectedSlot}</p><p><strong>Procedure:</strong> ${procedure}</p><p><em>Note: Your appointment will be pending approval. The clinic will notify you once confirmed.</em></p>`;
+        getElem('reviewModal').style.display = 'flex';
+    };
+    
+    window.submitAppointment = () => {
+        if(!pendingAppointment) return;
+        let newId = Date.now();
+        let newAppt = {
+            id: newId, patientId: currentPatient.id, patientName: currentPatient.name,
+            date: pendingAppointment.date, time: pendingAppointment.time,
+            procedure: pendingAppointment.procedure, status: 'pending', createdAt: new Date().toISOString()
+        };
+        appointments.push(newAppt);
+        messages.push({
+            id: Date.now() + 1, patientId: currentPatient.id, patientName: currentPatient.name,
+            message: `📅 Appointment request submitted for ${formatDateDMY(pendingAppointment.date)} at ${pendingAppointment.time} (${pendingAppointment.procedure}). Waiting for clinic approval.`,
+            reply: null, isSystemNotification: true, createdAt: new Date().toISOString()
+        });
+        saveAll();
+        alert("Appointment request submitted! You will receive a notification once approved.");
+        closeReviewModal();
+        getElem('appointmentDate').value = '';
+        getElem('appointmentProcedure').value = '';
+        selectedSlot = null;
+        getElem('timeSlotsContainer').innerHTML = 'Select a date first';
+        renderMyAppointments();
+        renderDashboardUpcoming();
+        renderNotifications();
+        renderPatientMessages();
+        switchSection('book');
+    };
+    
+    window.rescheduleAppointment = (apptId) => {
+        let appt = appointments.find(a => a.id === apptId && a.patientId === currentPatient.id);
+        if(!appt) return;
+        let newDate = prompt("Enter new date (YYYY-MM-DD):", appt.date);
+        if(!newDate) return;
+        let newTime = prompt("Enter new time (e.g., 10:00 AM):", appt.time);
+        if(!newTime) return;
+        let conflict = appointments.some(a => a.id !== apptId && a.date === newDate && a.time === newTime && (a.status === 'confirmed' || a.status === 'approved'));
+        if(conflict) { alert("That time slot is already taken."); return; }
+        let oldDate = appt.date, oldTime = appt.time, oldProcedure = appt.procedure;
+        appt.date = newDate;
+        appt.time = newTime;
+        appt.status = 'pending';
+        saveAll();
+        messages.push({
+            id: Date.now(), patientId: currentPatient.id, patientName: currentPatient.name,
+            message: `🔄 Reschedule request: Appointment on ${formatDateDMY(oldDate)} at ${oldTime} (${oldProcedure}) changed to ${formatDateDMY(newDate)} at ${newTime}. Waiting for clinic approval.`,
+            reply: null, isSystemNotification: true, createdAt: new Date().toISOString()
+        });
+        saveAll();
+        alert("Reschedule request sent. Pending clinic approval.");
+        renderMyAppointments();
+        renderDashboardUpcoming();
+        renderNotifications();
+        renderPatientMessages();
+    };
+    
+    window.cancelAppointment = (apptId) => {
+        if(!confirm("Cancel this appointment? This action cannot be undone.")) return;
+        let appt = appointments.find(a => a.id === apptId && a.patientId === currentPatient.id);
+        if(appt && appt.status !== 'cancelled') {
+            appt.status = 'cancelled';
+            saveAll();
+            messages.push({
+                id: Date.now(), patientId: currentPatient.id, patientName: currentPatient.name,
+                message: `❌ Your appointment on ${formatDateDMY(appt.date)} at ${appt.time} (${appt.procedure}) has been CANCELLED.`,
+                reply: null, isSystemNotification: true, createdAt: new Date().toISOString()
+            });
+            saveAll();
+            alert("Appointment cancelled.");
+            renderMyAppointments();
+            renderDashboardUpcoming();
+            renderNotifications();
+            renderPatientMessages();
+        }
+    };
+    
+    
+    function renderMyAppointments() {
+        let myAppts = appointments.filter(a => a.patientId === currentPatient.id).sort((a,b) => new Date(a.date) - new Date(b.date));
+        let container = getElem('myAppointmentsList');
+        if(!myAppts.length) { container.innerHTML = '<p>No appointments found.</p>'; return; }
+        let html = `<table class="data-table"><thead><tr><th>Date</th><th>Time</th><th>Procedure</th><th>Status</th><th>Actions</th></tr></thead><tbody>`;
+        myAppts.forEach(a => {
+            let statusClass = a.status === 'pending' ? 'status-pending' : (a.status === 'confirmed' || a.status === 'approved') ? 'status-confirmed' : 'status-cancelled';
+            let actionBtns = '';
+            if(a.status === 'pending') actionBtns = `<button class="btn-sm" onclick="rescheduleAppointment(${a.id})"><i class="fas fa-calendar-alt"></i> Reschedule</button><button class="btn-sm btn-danger" onclick="cancelAppointment(${a.id})"><i class="fas fa-times"></i> Cancel</button>`;
+            else if(a.status === 'confirmed' || a.status === 'approved') actionBtns = `<button class="btn-sm" onclick="rescheduleAppointment(${a.id})"><i class="fas fa-calendar-alt"></i> Reschedule</button><button class="btn-sm btn-danger" onclick="cancelAppointment(${a.id})"><i class="fas fa-times"></i> Cancel</button>`;
+            else actionBtns = `<span class="status-badge status-cancelled">Cancelled</span>`;
+            html += `<tr><td>${formatDateDMY(a.date)}</td><td>${a.time}</td><td>${a.procedure}</td><td><span class="status-badge ${statusClass}">${a.status}</span></td><td>${actionBtns}</td></tr>`;
+        });
+        html += `</tbody></table>`;
+        container.innerHTML = html;
+    }
+    
+    function renderDashboardUpcoming() {
+        let upcoming = appointments.filter(a => a.patientId === currentPatient.id && (a.status === 'confirmed' || a.status === 'approved') && new Date(a.date) >= new Date()).sort((a,b)=>new Date(a.date)-new Date(b.date));
+        let container = getElem('upcomingAppointmentsList');
+        if(!upcoming.length) { container.innerHTML = '<p>No upcoming appointments.</p>'; return; }
+        let html = `<table class="data-table"><thead><tr><th>Date</th><th>Time</th><th>Procedure</th><th>Status</th></tr></thead><tbody>`;
+        upcoming.forEach(a => { html += `<tr><td>${formatDateDMY(a.date)}</td><td>${a.time}</td><td>${a.procedure}</td><td><span class="status-badge status-confirmed">Confirmed</span></td></tr>`; });
+        html += `</tbody></table>`;
+        container.innerHTML = html;
+    }
+    
+    function renderNotifications() {
+        let notifMsgs = messages.filter(m => m.patientId === currentPatient.id && (m.isSystemNotification === true || m.reply !== null)).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+        let container = getElem('notificationList');
+        if(!notifMsgs.length) { container.innerHTML = '<p>No notifications</p>'; return; }
+        let html = '';
+        notifMsgs.slice(0,5).forEach(m => {
+            html += `<div class="message-item" style="border-left-color:var(--gold-main);"><strong><i class="fas fa-bell"></i> ${m.isSystemNotification ? 'System Notification' : 'Clinic Reply'}</strong> <span style="font-size:11px;">${new Date(m.createdAt).toLocaleString()}</span><p>${m.message}</p>${m.reply ? `<div class="message-reply"><i class="fas fa-reply"></i> ${m.reply}</div>` : ''}</div>`;
+        });
+        container.innerHTML = html;
+    }
+    
+    // Records section (consistent with admin display)
+    function renderPatientInfo() { 
+        let p = currentPatient;
+        getElem('patientInfoDisplay').innerHTML = `<div class="patient-info-grid">
+            <div class="patient-info-item"><label>Name:</label><span>${p.name}</span></div>
+            <div class="patient-info-item"><label>Age / Sex:</label><span>${p.age} / ${p.sex}</span></div>
+            <div class="patient-info-item"><label>Email:</label><span>${p.email||'N/A'}</span></div>
+            <div class="patient-info-item"><label>Contact:</label><span>${p.contact||'N/A'}</span></div>
+            <div class="patient-info-item"><label>Address:</label><span>${p.address||'N/A'}</span></div>
+            <div class="patient-info-item"><label>Last Visit:</label><span>${p.lastVisit||'N/A'}</span></div>
+        </div>`; 
+    }
+    function renderPatientDailyRecords() { 
+        let recs = dailyRecords[currentPatient.id] || []; 
+        let container = getElem('patientDailyRecords'); 
+        if(!recs.length) { container.innerHTML = '<p>No treatment records found.</p>'; return; } 
+        let html = `<table class="daily-record-table"><thead><tr><th>Date</th><th>Tooth #</th><th>Service</th><th>Dentist</th><th>Value (₱)</th><th>Paid (₱)</th><th>Balance (₱)</th></tr></thead><tbody>`; 
+        recs.forEach(r => { html += `<tr><td>${r.date||''}</td><td>${r.tooth||''}</td><td>${r.service||''}</td><td>${r.dentist||''}</td><td>₱${r.valueWork||0}</td><td>₱${r.amountPaid||0}</td><td>₱${r.balance||0}</td></tr>`; }); 
+        html += `</tbody></table>`; 
+        container.innerHTML = html; 
+    }
+    function renderPatientMedicalHistory() { 
+        let histories = patientHistories[currentPatient.id] || []; 
+        let container = getElem('patientMedicalHistory'); 
+        if(!histories.length) { container.innerHTML = '<p>No medical history records.</p>'; return; } 
+        let html = ''; 
+        histories.forEach((h,idx) => { 
+            html += `<div class="medical-history-card"><strong><i class="fas fa-notes-medical"></i> Record ${idx+1} - ${h.date}</strong>
+                <div class="mh-row"><strong>Affected Teeth:</strong> ${h.affectedTeeth||'None'}</div>
+                <div class="mh-row"><strong>Good Health:</strong> ${h.goodHealth || 'N/A'} | <strong>Allergies:</strong> ${h.allergies || 'N/A'}</div>
+                <div class="mh-row"><strong>Penicillin Allergy:</strong> ${h.penicillin || 'N/A'}</div>
+                <div class="mh-row"><strong>Diseases:</strong> ${h.diseases.join(', ')||'None'}</div>
+                <div class="mh-row"><strong>Medication:</strong> ${h.takingMedicine || 'N/A'} | <strong>Physician Care:</strong> ${h.physicianCare || 'N/A'}</div>
+                <div class="mh-row"><strong>Previous Extraction:</strong> ${h.previousExtraction || 'N/A'}</div>
+                <div class="mh-row"><strong>Women:</strong> Pregnant:${h.pregnant || 'N/A'} | Bleeder:${h.bleeder || 'N/A'} | Menstruation:${h.menstruation || 'N/A'}</div>
+            </div>`; 
+        }); 
+        container.innerHTML = html; 
+    }
+    function renderPatientTreatmentPlan() { 
+        let plan = treatmentPlans[currentPatient.id]; 
+        getElem('patientTreatmentPlan').innerHTML = plan ? `<div style="background:#f9f6ef; border-radius:12px; padding:15px; white-space:pre-wrap;"><i class="fas fa-file-prescription"></i> ${plan}</div>` : '<p>No treatment plan yet.</p>'; 
+    }
+    
+    // Messages section - includes appointment notifications
+    function renderPatientMessages() {
+        let msgs = messages.filter(m => m.patientId === currentPatient.id).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+        let container = getElem('patientMessagesList');
+        if(!msgs.length) { container.innerHTML = '<p>No messages.</p>'; return; }
+        let html = '';
+        msgs.forEach(m => {
+            let sender = m.isSystemNotification ? '<i class="fas fa-bell"></i> System' : (m.reply ? '<i class="fas fa-clinic-medical"></i> Clinic' : '<i class="fas fa-user"></i> You');
+            html += `<div class="message-item"><strong>${sender}</strong> <span style="font-size:11px;">${new Date(m.createdAt).toLocaleString()}</span><p>${m.message}</p>${m.reply ? `<div class="message-reply"><strong><i class="fas fa-reply"></i> Clinic Reply:</strong> ${m.reply}</div>` : ''}</div>`;
+        });
+        container.innerHTML = html;
+    }
+    
+    
+    window.sendPatientMessage = () => {
+        let text = getElem('newMessageText').value.trim();
+        if(!text) { alert("Please enter a message."); return; }
+        messages.push({
+            id: Date.now(), patientId: currentPatient.id, patientName: currentPatient.name,
+            message: text, reply: null, isSystemNotification: false, createdAt: new Date().toISOString()
+        });
+        saveAll();
+        getElem('newMessageText').value = '';
+        renderPatientMessages();
+        alert("Message sent to clinic. They will reply shortly.");
+    };
+    
+    // --- REVIEWS LOGIC ---
+function renderReviews() {
+    // Get current patient's reviews, sorted by newest first
+    let myReviews = reviews.filter(r => r.patientId === currentPatient.id).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+    let container = getElem('myReviewsList');
+    
+    if(!myReviews.length) { 
+        container.innerHTML = '<p>You haven\'t submitted any reviews yet.</p>'; 
+        return; 
+    }
+    
+    let html = '';
+    myReviews.forEach(r => {
+        // Generate star icons
+        let stars = '<i class="fas fa-star" style="color:var(--gold-main)"></i>'.repeat(r.rating) + 
+                    '<i class="far fa-star" style="color:var(--gold-main)"></i>'.repeat(5 - r.rating);
+                    
+        html += `<div class="message-item">
+            <div style="display:flex; justify-content:space-between; margin-bottom: 8px;">
+                <strong>${stars}</strong> 
+                <span style="font-size:11px; color:#888;">${new Date(r.createdAt).toLocaleDateString()}</span>
+            </div>
+            <p style="margin:0; font-size: 14px;">${r.text}</p>
+        </div>`;
+    });
+    container.innerHTML = html;
+}
+
+window.submitReview = () => {
+    let rating = parseInt(getElem('reviewRating').value);
+    let text = getElem('reviewText').value.trim();
+    
+    if(!text) { alert("Please enter your feedback before submitting."); return; }
+    
+    reviews.push({
+        id: Date.now(),
+        patientId: currentPatient.id,
+        patientName: currentPatient.name,
+        rating: rating,
+        text: text,
+        createdAt: new Date().toISOString()
+    });
+    
+    saveAll();
+    getElem('reviewText').value = ''; // Clear text area
+    getElem('reviewRating').value = '5'; // Reset stars
+    renderReviews(); // Refresh the list
+    alert("Thank you! Your review has been submitted successfully.");
+};
+    
+    window.closeReviewModal = () => { getElem('reviewModal').style.display = 'none'; pendingAppointment = null; };
+    window.logout = () => { alert("Logged out."); window.location.href = 'index.html'; };
+    
+    if(currentPatient) getElem('patientNameDisplay').innerText = currentPatient.name;
+    document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+    renderDashboardUpcoming();
+    renderNotifications();
+    renderMyAppointments();
+    getElem('appointmentDate').setAttribute('min', formatDateYMD(new Date()));
+    window.switchSection('dashboard');
+
+// --- ACCOUNT MANAGEMENT LOGIC ---
+
+function renderAccountDetails() {
+    if(!currentPatient) return;
+    getElem('accName').value = currentPatient.name || '';
+    getElem('accEmail').value = currentPatient.email || '';
+    getElem('accAge').value = currentPatient.age !== 'N/A' ? currentPatient.age : '';
+    getElem('accSex').value = currentPatient.sex || 'N/A';
+    getElem('accContact').value = currentPatient.contact !== 'N/A' ? currentPatient.contact : '';
+    getElem('accAddress').value = currentPatient.address !== 'Please update profile' ? currentPatient.address : '';
+}
+
+window.updateAccount = () => {
+    if(!currentPatient) return;
+    
+    // --- Password Handling ---
+    let currentPassInput = getElem('accCurrentPass').value;
+    let newPassInput = getElem('accNewPass').value;
+
+    // If the user typed something in the new password field, try to update it
+    if (newPassInput !== '') {
+        if (currentPassInput !== currentPatient.password) {
+            alert("Your current password is incorrect. Profile not updated.");
+            return; // Stop the update process
+        }
+        if (newPassInput.length < 6) {
+            alert("New password must be at least 6 characters long.");
+            return;
+        }
+        // Update the password in the current patient object
+        currentPatient.password = newPassInput;
+    }
+    
+    // --- Standard Profile Updates ---
+    currentPatient.name = getElem('accName').value.trim();
+    currentPatient.email = getElem('accEmail').value.trim();
+    currentPatient.age = getElem('accAge').value.trim() || 'N/A';
+    currentPatient.sex = getElem('accSex').value;
+    currentPatient.contact = getElem('accContact').value.trim() || 'N/A';
+    currentPatient.address = getElem('accAddress').value.trim() || 'N/A';
+    
+    // Update the loggedInUser in localStorage so it doesn't revert on refresh
+    let sessionUser = JSON.parse(localStorage.getItem('currentUser'));
+    if(sessionUser) {
+        sessionUser.name = currentPatient.name;
+        sessionUser.email = currentPatient.email;
+        // If password changed, update session too
+        if (newPassInput !== '') {
+            sessionUser.password = currentPatient.password;
+        }
+        localStorage.setItem('currentUser', JSON.stringify(sessionUser));
+    }
+    
+    saveAll(); // Save to your patients array
+    
+    // Clear the password fields so they don't sit there in plaintext
+    getElem('accCurrentPass').value = '';
+    getElem('accNewPass').value = '';
+    // Reset any toggled eye icons back to hidden
+    document.querySelectorAll('.fa-eye-slash').forEach(icon => {
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    });
+    
+    getElem('patientNameDisplay').innerText = currentPatient.name;
+    alert("Profile updated successfully!");
+};
+
+window.deleteAccount = () => {
+    if(confirm("Are you ABSOLUTELY sure you want to delete your account? This action cannot be undone.")) {
+        // Remove patient from the array
+        patients = patients.filter(p => p.id !== currentPatient.id);
+        saveAll();
+        
+        // Clear current login session
+        localStorage.removeItem('currentUser');
+        
+        alert("Your account has been successfully deleted.");
+        window.location.href = 'login.html'; // Send them back to the login screen
+    }
+};
+// --- PASSWORD VISIBILITY TOGGLE ---
+window.togglePassword = (inputId, iconElement) => {
+    let input = document.getElementById(inputId);
+    if (input.type === "password") {
+        input.type = "text";
+        iconElement.classList.remove('fa-eye');
+        iconElement.classList.add('fa-eye-slash');
+    } else {
+        input.type = "password";
+        iconElement.classList.remove('fa-eye-slash');
+        iconElement.classList.add('fa-eye');
+    }
+};
+</script>
+</body>
+</html>
