@@ -361,6 +361,14 @@
     
     // Storage (sync with admin dashboard)
     let patients = JSON.parse(localStorage.getItem('patients') || '[]');
+    
+    // Initialize registrationStatus for existing patients (for backward compatibility)
+    patients.forEach(p => {
+        if (!p.registrationStatus) {
+            p.registrationStatus = 'approved'; // Existing patients are pre-approved
+        }
+    });
+    
     let appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
     let dailyRecords = JSON.parse(localStorage.getItem('dailyRecords') || '{}');
     let patientHistories = JSON.parse(localStorage.getItem('patientHistories') || '{}');
@@ -417,7 +425,7 @@
         // 5. If they aren't in the database yet (a newly registered account!), add them
         if (!currentPatient) {
             currentPatient = {
-                id: Date.now(), // Generates a unique ID based on the current timestamp
+                id: Date.now(),
                 name: loggedInUser.name,
                 email: loggedInUser.email,
                 age: 'N/A',
@@ -426,6 +434,7 @@
                 contact: 'N/A',
                 lastVisit: 'First Visit',
                 status: 'active',
+                registrationStatus: 'pending', // NEW: Set new registrations as pending approval
                 archivedDate: null
             };
             

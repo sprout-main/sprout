@@ -584,6 +584,7 @@
                     <div id="approvalList" style="margin-top:10px;"></div>
                 </div>
 
+
                 <div class="card">
                     <div class="card-title">Total Registered Users</div>
                     <div class="stat-number" id="totalUsersCount">0</div>
@@ -980,6 +981,14 @@ function confirmPrint(recordType) {
 }
     let dailyRecords = JSON.parse(localStorage.getItem('dailyRecords') || '{}');
     let patients = JSON.parse(localStorage.getItem('patients') || '[]');
+    
+    // Initialize registrationStatus for existing patients (for backward compatibility)
+    patients.forEach(p => {
+        if (!p.registrationStatus) {
+            p.registrationStatus = 'approved'; // Existing patients are pre-approved
+        }
+    });
+    
     let patientHistories = JSON.parse(localStorage.getItem('patientHistories') || '{}');
     let treatmentPlans = JSON.parse(localStorage.getItem('treatmentPlans') || '{}');
     let appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
@@ -1070,6 +1079,7 @@ function confirmPrint(recordType) {
                 </div>`
             ).join(''); 
         }
+
     }
 
     // Calendar
@@ -1214,7 +1224,8 @@ function confirmPrint(recordType) {
     // Patient Directory System
     function renderActivePatients() { 
         let tbody = getElem('activePatientsBody'); 
-        let active = patients.filter(p => p.status === 'active'); 
+        // Only show approved patients (exclude pending registrations)
+        let active = patients.filter(p => p.status === 'active' && (p.registrationStatus === 'approved' || !p.registrationStatus)); 
         tbody.innerHTML = active.map((p,i) => `<tr>
                 <td>${i+1}</td>
                 <td>${p.name}</td>
@@ -1778,7 +1789,7 @@ function confirmPrint(recordType) {
             switchPatientTab('active'); 
             renderActivePatients(); 
             renderArchivedPatients(); 
-        } 
+        }
         if(section === 'users') {
             // FIX: Uses the correct function name defined at the bottom of the script
             renderUsersView();  
